@@ -1,5 +1,2 @@
-os
-random
-sys
-requests
-python-telegram-bot
+requests==2.24.0
+python-telegram-bot==12.8
