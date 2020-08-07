@@ -1,0 +1,6 @@
+logging
+os
+random
+sys
+requests
+python-telegram-bot
