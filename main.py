@@ -60,7 +60,7 @@ def yardim(update, context):
     help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
     help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
     help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
-    help_message += "/lisans_program Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
+    help_message += "/lisans_programi Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
     help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
@@ -113,8 +113,16 @@ def ogrencimiz_gozunden(update, context):
     update.message.reply_text("Bölüm öğrencimiz Furkan Portakal'ın medium makalesine https://medium.com/@furkanportakal/neden-bursa-teknik-ed101c4a78f3 adresinden erişebilirsiniz.")
 
 # Creating a handler-function for /start command 
+def ogrenci_klupleri(update, context):
+    update.message.reply_text("Güncellenmektedir.")
+
+# Creating a handler-function for /start command 
 def yazilim_kutuphanesi(update, context):
     update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
+
+# Creating a handler-function for /start command 
+def lisans_programi(update, context):
+    update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
 def erasmus(update, context):
@@ -126,6 +134,14 @@ def farabi(update, context):
     
 # Creating a handler-function for /start command 
 def mevlana(update, context):
+    update.message.reply_text("Güncellenmektedir.")
+    
+# Creating a handler-function for /start command 
+def cap(update, context):
+    update.message.reply_text("Güncellenmektedir.")
+    
+# Creating a handler-function for /start command 
+def yandal(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
@@ -148,6 +164,8 @@ def arastirma_gruplari_projeler(update, context):
 def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
+
+    
 # Creating a handler-function for /start command 
 def sss(update, context):
     help_message = "Soru: BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\nCevap: Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır.\n\n"
@@ -169,17 +187,22 @@ def main():
     dp.add_handler(CommandHandler("yardim", yardim))
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
-    dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
     dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
     dp.add_handler(CommandHandler("ogrenci_tanitim", ogrenci_tanitim))
     dp.add_handler(CommandHandler("mezun_tanitim", mezun_tanitim))
+    dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
+    dp.add_handler(CommandHandler("akademik_kadro", akademik_kadro))
     dp.add_handler(CommandHandler("bolum_tarihi", bolum_tarihi))
     dp.add_handler(CommandHandler("yok_atlas", yok_atlas))
     dp.add_handler(CommandHandler("sep_bilgi", sep_bilgi))
+    dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
     dp.add_handler(CommandHandler("yazilim_kutuphanesi", yazilim_kutuphanesi))
+    dp.add_handler(CommandHandler("lisans_programi", lisans_programi))
     dp.add_handler(CommandHandler("erasmus", erasmus))
     dp.add_handler(CommandHandler("farabi", farabi))
     dp.add_handler(CommandHandler("mevlana", mevlana))
+    dp.add_handler(CommandHandler("cap", cap))
+    dp.add_handler(CommandHandler("yandal", yandal))
     dp.add_handler(CommandHandler("laboratuvarlar", laboratuvarlar))
     dp.add_handler(CommandHandler("staj", staj))
     dp.add_handler(CommandHandler("anabilim_dallari", anabilim_dallari))
