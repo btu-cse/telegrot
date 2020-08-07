@@ -199,6 +199,7 @@ def main():
     dp.add_handler(CommandHandler("anabilim_dallari", anabilim_dallari))
     dp.add_handler(CommandHandler("arastirma_gruplari_projeler", arastirma_gruplari_projeler))
     dp.add_handler(CommandHandler("yayinlar", yayinlar))
+    dp.add_handler(CommandHandler("sss", sss))
     
     # Start the Bot
     updater.start_polling()
