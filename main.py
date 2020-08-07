@@ -52,8 +52,7 @@ def yardim(update, context):
     help_message += "/hakkinda BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
     help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
     help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/mezun_tanitim Bölüm mezunlarının tanıtım videosunu görüntülemek istiyorum\n"
+    help_message += "/youtube_tanitim Youtube'da BTÜ Bilgisayar Mühendisliği'nin tanıtıldığı kayıtlara erişmek istiyorum.\n"
     help_message += "/akademik_kadro Akademik personel hakkında bilgi almak istiyorum\n"
     help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n"
     help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
@@ -67,6 +66,7 @@ def yardim(update, context):
     help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
+    help_message += "/ogrencimiz_gozunden Öğrencilerinin gözünden BTÜ Bilgisayar Mühendisliği\○n"
     help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
     help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
     help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
@@ -79,92 +79,68 @@ def hakkinda(update, context):
 def web_sayfasi(update, context):
     update.message.reply_text("http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz.")
     
-def akademik_kadro(update, context):
-    update.message.reply_text("Bölüm akademik kadrosuna http://bilgisayar.btu.edu.tr/index.php?page=akademikkadro&sid=6700 adresinden erişebilirsiniz")
-    
 def akademik_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımızın tanıtım videosuna https://youtu.be/s0CPmkIeVLc adresinden erişebilirsiniz.")
     
-def ogrenci_tanitim(update, context):
-    update.message.reply_text("Güncellenmektedir.")
-    
-# Creating a handler-function for /start command 
-def mezun_tanitim(update, context):
+def youtube_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımız ve mezun öğrencimizin Youtube yayın kaydına https://youtu.be/aCWweagVyK8 adresinden erişebilirsiniz.")
-    
-# Creating a handler-function for /start command 
+
+def akademik_kadro(update, context):
+    update.message.reply_text("Bölümümüzde 1 Profesör, 1 Doçent, 6 Doktor Öğretim Üyesi ve 5 Araştırma Görevlisi görev yapmaktadır. Akademik Personel Yapay Zeka, Veri Madenciliği, Siber Güvenlik, Bioinformatik gibi alanlarda uzmanlıklara sahiptir. Detaylara http://bilgisayar.btu.edu.tr/index.php?page=akademikkadro&sid=6700 adresinden erişebilirsiniz")
+
 def bolum_tarihi(update, context):
     update.message.reply_text("Bursa Teknik Üniversitesi, Mühendislik ve Mimarlık Fakültesi içerisinde yer alan Bilgisayar Mühendisliği Bölümü 2015 yılında kurulmuştur. 2016 yılında KHK ile kapatılan Bursa Orhangazi Üniversitesi'nin Bilgisayar Mühendisliği (İngilizce) bölümü öğrencilerinin eğitimlerini sürdürebilmesi amacıyla YÖK tarafından bölümümüz İngilizce olarak eğitime başlamıştır. Şu an bölümümüzde 667 Karar Sayılı KHK Kapsamındaki Özel Öğrenciler ve Yabancı Öğrenciler öğrenimlerine %100 ingilizce olarak devam etmektedirler. Bu program, 'Özel ve Yabancı öğrenciler' mezun olduğunda kapanacaktır ve ÖSYM puanıyla öğrenci almamaktadır. Bilgisayar Mühendisliği (Türkçe) programı ise 2018 yılında isteğe bağlı İngilizce hazırlık sınıfı seçeneğiyle kurulmuş olup ilk öğrencilerini 2018 Üniversite Giriş sınavı sonuçlarıyla almıştır.")
     
-# Creating a handler-function for /start command 
 def yok_atlas(update, context):
     update.message.reply_text("Bölüm YÖK Atlas sayfasına https://yokatlas.yok.gov.tr/lisans.php?y=102410190 adresinden erişebilirsiniz.")
 
-# Creating a handler-function for /start command 
 def sep_bilgi(update, context):
     update.message.reply_text("SEP programı ÖSYM kılavuzunda özel koşul olarak yer almaktadır, bütün öğrencilerimiz dahildir. 7 dönem ders ve 1 dönem proje bazlı işyeri eğitimi vardır. İşyeri eğitimi süresince devlet tarafından SGK nız ödenir ve asgari ücretin 1/3 ü kadar maaş alırsınız. İşyeri eğitimi yaptığınız işveren sizi işe aldığında işverene de devlet teşviği vardır. Daha fazlası için http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz.")
     
-# Creating a handler-function for /start command 
 def sep_anlasmali_sirketler(update, context):
     update.message.reply_text("SEP anlaşmalı şirketler listesine http://sep.btu.edu.tr adresinden erişebilirsiniz.")
 
-# Creating a handler-function for /start command 
 def ogrencimiz_gozunden(update, context):
     update.message.reply_text("Bölüm öğrencimiz Furkan Portakal'ın medium makalesine https://medium.com/@furkanportakal/neden-bursa-teknik-ed101c4a78f3 adresinden erişebilirsiniz.")
 
-# Creating a handler-function for /start command 
 def ogrenci_klupleri(update, context):
     update.message.reply_text("Güncellenmektedir.")
 
-# Creating a handler-function for /start command 
 def yazilim_kutuphanesi(update, context):
     update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
 
-# Creating a handler-function for /start command 
 def lisans_programi(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def erasmus(update, context):
     update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır.")
     
-# Creating a handler-function for /start command 
 def farabi(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def mevlana(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def cap(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def yandal(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def laboratuvarlar(update, context):
     update.message.reply_text("Bölümümüzde 2 adet 55+1 pc kapasiteli ders laboratuvarı ve 1 adet 20+1 pc kapasiteli özel çalışma laboratuvarı bulunmaktadır. Tüm bilgisayarlarda Linux + Windows işletim sistemleri dual-boot modunda çalıştırılabilmektedir. Cihazların tamamı All-in-One cihazlardır. Ders laboratuvarındaki bilgisayarlar 16 GB Ram ve SSD disk özelliklerine sahiptir.")
 
-# Creating a handler-function for /start command 
 def staj(update, context):
     update.message.reply_text("Bölümümüzde mezuniyet için 2 adet zorunlu staj yükümlülüğü bulunmaktadır.")
     
-# Creating a handler-function for /start command 
 def anabilim_dallari(update, context):
     update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri ve Bilgisayar Donanımı olmak üzere 3 anabilim dalı bulunmaktadır.")
     
-# Creating a handler-function for /start command 
 def arastirma_gruplari_projeler(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
 def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
-    
-
     
 # Creating a handler-function for /start command 
 def sss(update, context):
@@ -188,8 +164,7 @@ def main():
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
     dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
-    dp.add_handler(CommandHandler("ogrenci_tanitim", ogrenci_tanitim))
-    dp.add_handler(CommandHandler("mezun_tanitim", mezun_tanitim))
+    dp.add_handler(CommandHandler("youtube_tanitim", youtube_tanitim))
     dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
     dp.add_handler(CommandHandler("akademik_kadro", akademik_kadro))
     dp.add_handler(CommandHandler("bolum_tarihi", bolum_tarihi))
@@ -208,7 +183,7 @@ def main():
     dp.add_handler(CommandHandler("anabilim_dallari", anabilim_dallari))
     dp.add_handler(CommandHandler("arastirma_gruplari_projeler", arastirma_gruplari_projeler))
     dp.add_handler(CommandHandler("yayinlar", yayinlar))
-    dp.add_handler(CommandHandler("sss", sss))
+    dp.add_handler(CommandHandler("ogrencimiz_gozunden", ogrencimiz_gozunden))
     
     # Start the Bot
     updater.start_polling()
