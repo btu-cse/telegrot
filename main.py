@@ -38,36 +38,8 @@ else:
 def start(update, context):
     """Send a message when the command /help is issued."""
     
-    help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
-    help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
-    help_message += "Mevcut komutlar; \n\n"
-    help_message += "/yardim -> Tüm komutları görmek istiyorum\n"
-    help_message += "/hakkinda BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
-    help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
-    help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/mezun_tanitim Bölüm mezunlarının tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/akademik_personel Akademik personel hakkında bilgi almak istiyorum\n"
-    help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n"
-    help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
-    help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
-    help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
-    help_message += "/yazılım_kütüphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
-    help_message += "/lisans_program Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/bm_yl_program Bilgisayar Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/asm_yl_program Akıllı Sistemler Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/bm_yl_akademik_personel Bilgisayar Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
-    help_message += "/asm_yl_akademik_personel Akıllı Sistemler Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
-    help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
-    help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
-    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
-    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
-    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
+    help_message = "Merhaba, BTÜ ve Bilgisayar Mühendisliği Bölümü hakkında sorularınızı cevaplandırmak üzere buradayım."
+    help_message += "Mevcut komutları görmek için /yardim komutunu kullanabilirsin. \n"
     update.message.reply_text(help_message)
 
 def yardim(update, context):
@@ -187,6 +159,12 @@ def arastirma_gruplari_projeler(update, context):
 # Creating a handler-function for /start command 
 def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
+    
+# Creating a handler-function for /start command 
+def sss(update, context):
+    help_message = "Soru: BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\nCevap: Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır.\n\n"
+    help_message += "Soru: BTÜ yurt olanakları nelerdir ?\nCevap: Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.\n"
+    update.message.reply_text(help_message)
 
 def main():
     # Create the Updater and pass it your bot's token.
@@ -198,6 +176,7 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
+    dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("yardim", yardim))
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
