@@ -41,8 +41,8 @@ def start(update, context):
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
     help_message += "Mevcut komutlar; \n\n"
-    help_message += "/help -> Tüm komutları görmek istiyorum\n"
-    help_message += "/about BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
+    help_message += "/yardim -> Tüm komutları görmek istiyorum\n"
+    help_message += "/hakkinda BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
     help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
     help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
     help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
@@ -65,9 +65,9 @@ def start(update, context):
     help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
     help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
-    help_message += "/anabilim_dalları Anabilim dallarını incelemek istiyorum\n"
-    help_message += "/arastirma_grupları_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
-    help_message += "/yayınlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
+    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
+    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
+    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
     update.message.reply_text(help_message)
 
 def yardim(update, context):
@@ -76,8 +76,8 @@ def yardim(update, context):
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
     help_message += "Mevcut komutlar; \n\n"
-    help_message += "/help -> Tüm komutları görmek istiyorum\n"
-    help_message += "/about BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
+    help_message += "/yardim -> Tüm komutları görmek istiyorum\n"
+    help_message += "/hakkinda BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
     help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
     help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
     help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
@@ -100,9 +100,9 @@ def yardim(update, context):
     help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
     help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
-    help_message += "/anabilim_dalları Anabilim dallarını incelemek istiyorum\n"
-    help_message += "/arastirma_grupları_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
-    help_message += "/yayınlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
+    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
+    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
+    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
     update.message.reply_text(help_message)
     
 def hakkinda(bot, update):
