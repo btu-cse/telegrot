@@ -39,7 +39,8 @@ def start(update, context):
     """Send a message when the command /help is issued."""
     
     help_message = "Merhaba, BTÜ ve Bilgisayar Mühendisliği Bölümü hakkında sorularınızı cevaplandırmak üzere buradayım."
-    help_message += "Mevcut komutları görmek için /yardim komutunu kullanabilirsin. \n"
+    help_message = "Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır."
+    help_message += "Mevcut komutları görmek için /yardim komutunu kullanabilirsin.\n"
     update.message.reply_text(help_message)
 
 def yardim(update, context):
@@ -59,6 +60,8 @@ def yardim(update, context):
     help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
     help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
     help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
+    help_message += "/ogrencimiz_gozunden Bölümümüzü bir de öğrencimizden dinleyin\n"
+    help_message += "/ogrenci_klupleri Üniversitenin öğrenci klüpleri listesine erişmek istiyorum.\n"
     help_message += "/lisans_programi Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
     help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
@@ -71,6 +74,8 @@ def yardim(update, context):
     help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
     help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
     help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
+    help_message += "/yurt BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?"
+    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?"
     update.message.reply_text(help_message)
     
 def hakkinda(update, context):
@@ -100,14 +105,14 @@ def sep_bilgi(update, context):
 def sep_anlasmali_sirketler(update, context):
     update.message.reply_text("SEP anlaşmalı şirketler listesine http://sep.btu.edu.tr adresinden erişebilirsiniz.")
 
+def yazilim_kutuphanesi(update, context):
+    update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
+
 def ogrencimiz_gozunden(update, context):
     update.message.reply_text("Bölüm öğrencimiz Furkan Portakal'ın medium makalesine https://medium.com/@furkanportakal/neden-bursa-teknik-ed101c4a78f3 adresinden erişebilirsiniz.")
 
 def ogrenci_klupleri(update, context):
     update.message.reply_text("Güncellenmektedir.")
-
-def yazilim_kutuphanesi(update, context):
-    update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
 
 def lisans_programi(update, context):
     update.message.reply_text("Güncellenmektedir.")
@@ -142,12 +147,11 @@ def arastirma_gruplari_projeler(update, context):
 def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
-# Creating a handler-function for /start command 
-def sss(update, context):
-    help_message = "Soru: BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\nCevap: Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır.\n\n"
-    help_message += "Soru: BTÜ yurt olanakları nelerdir ?\nCevap: Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.\n\n"
-    help_message += "Soru: MÜDEK Akreditasyonunuz var mı ?\nCevap: Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabiliyor. Bilgisayar Müh. Türkçe programı 2018'den beri öğrenci alıyor, mezun verildiğinde akreditasyon başvurusu yapılacaktır."
-    update.message.reply_text(help_message)
+def yurt(update, context):
+    update.message.reply_text("Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.")
+
+def mudek(update, context):
+    update.message.reply_text("Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabiliyor. Bilgisayar Müh. Türkçe programı 2018'den beri öğrenci alıyor, mezun verildiğinde akreditasyon başvurusu yapılacaktır")
 
 def main():
     # Create the Updater and pass it your bot's token.
@@ -163,15 +167,16 @@ def main():
     dp.add_handler(CommandHandler("yardim", yardim))
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
-    dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
-    dp.add_handler(CommandHandler("youtube_tanitim", youtube_tanitim))
     dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
+    dp.add_handler(CommandHandler("youtube_tanitim", youtube_tanitim))
     dp.add_handler(CommandHandler("akademik_kadro", akademik_kadro))
     dp.add_handler(CommandHandler("bolum_tarihi", bolum_tarihi))
     dp.add_handler(CommandHandler("yok_atlas", yok_atlas))
     dp.add_handler(CommandHandler("sep_bilgi", sep_bilgi))
     dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
     dp.add_handler(CommandHandler("yazilim_kutuphanesi", yazilim_kutuphanesi))
+    dp.add_handler(CommandHandler("ogrencimiz_gozunden", ogrencimiz_gozunden))
+    dp.add_handler(CommandHandler("ogrenci_klupleri", ogrenci_klupleri))
     dp.add_handler(CommandHandler("lisans_programi", lisans_programi))
     dp.add_handler(CommandHandler("erasmus", erasmus))
     dp.add_handler(CommandHandler("farabi", farabi))
@@ -183,7 +188,8 @@ def main():
     dp.add_handler(CommandHandler("anabilim_dallari", anabilim_dallari))
     dp.add_handler(CommandHandler("arastirma_gruplari_projeler", arastirma_gruplari_projeler))
     dp.add_handler(CommandHandler("yayinlar", yayinlar))
-    dp.add_handler(CommandHandler("ogrencimiz_gozunden", ogrencimiz_gozunden))
+    dp.add_handler(CommandHandler("yurt", yurt))
+    dp.add_handler(CommandHandler("mudek", mudek))
     
     # Start the Bot
     updater.start_polling()
