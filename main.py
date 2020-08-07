@@ -61,10 +61,6 @@ def yardim(update, context):
     help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
     help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
     help_message += "/lisans_program Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/bm_yl_program Bilgisayar Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/asm_yl_program Akıllı Sistemler Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/bm_yl_akademik_personel Bilgisayar Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
-    help_message += "/asm_yl_akademik_personel Akıllı Sistemler Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
     help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
     help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
@@ -106,8 +102,16 @@ def yok_atlas(update, context):
 
 # Creating a handler-function for /start command 
 def sep_bilgi(update, context):
-    update.message.reply_text("http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz.")
+    update.message.reply_text("SEP programı ÖSYM kılavuzunda özel koşul olarak yer almaktadır, bütün öğrencilerimiz dahildir. 7 dönem ders ve 1 dönem proje bazlı işyeri eğitimi vardır. İşyeri eğitimi süresince devlet tarafından SGK nız ödenir ve asgari ücretin 1/3 ü kadar maaş alırsınız. İşyeri eğitimi yaptığınız işveren sizi işe aldığında işverene de devlet teşviği vardır. Daha fazlası için http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz.")
     
+# Creating a handler-function for /start command 
+def sep_anlasmali_sirketler(update, context):
+    update.message.reply_text("SEP anlaşmalı şirketler listesine http://sep.btu.edu.tr adresinden erişebilirsiniz.")
+
+# Creating a handler-function for /start command 
+def ogrencimiz_gozunden(update, context):
+    update.message.reply_text("Bölüm öğrencimiz Furkan Portakal'ın medium makalesine https://medium.com/@furkanportakal/neden-bursa-teknik-ed101c4a78f3 adresinden erişebilirsiniz.")
+
 # Creating a handler-function for /start command 
 def yazilim_kutuphanesi(update, context):
     update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
@@ -166,6 +170,7 @@ def main():
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
     dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
+    dp.add_handler(CommandHandler("sep_anlasmali_sirketler", sep_anlasmali_sirketler))
     dp.add_handler(CommandHandler("ogrenci_tanitim", ogrenci_tanitim))
     dp.add_handler(CommandHandler("mezun_tanitim", mezun_tanitim))
     dp.add_handler(CommandHandler("bolum_tarihi", bolum_tarihi))
