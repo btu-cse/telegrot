@@ -54,7 +54,7 @@ def yardim(update, context):
     help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
     help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
     help_message += "/mezun_tanitim Bölüm mezunlarının tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/akademik_personel Akademik personel hakkında bilgi almak istiyorum\n"
+    help_message += "/akademik_kadro Akademik personel hakkında bilgi almak istiyorum\n"
     help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n"
     help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
     help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
@@ -113,22 +113,6 @@ def yazilim_kutuphanesi(update, context):
     update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
     
 # Creating a handler-function for /start command 
-def bm_yl_program(update, context):
-    update.message.reply_text("Lisans Ders Planı için http://bilgisayar.btu.edu.tr/index.php?sid=6790 adresini ziyaret ediniz.")
-    
-# Creating a handler-function for /start command 
-def asm_yl_program(update, context):
-    update.message.reply_text("Güncellenmektedir.")
-    
-# Creating a handler-function for /start command 
-def bm_yl_akademik_personel(update, context):
-    update.message.reply_text("Güncellenmektedir.")
-    
-# Creating a handler-function for /start command 
-def asm_yl_akademik_personel(update, context):
-    update.message.reply_text("Güncellenmektedir.")
-    
-# Creating a handler-function for /start command 
 def erasmus(update, context):
     update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır.")
     
@@ -163,7 +147,8 @@ def yayinlar(update, context):
 # Creating a handler-function for /start command 
 def sss(update, context):
     help_message = "Soru: BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\nCevap: Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır.\n\n"
-    help_message += "Soru: BTÜ yurt olanakları nelerdir ?\nCevap: Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.\n"
+    help_message += "Soru: BTÜ yurt olanakları nelerdir ?\nCevap: Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.\n\n"
+    help_message += "Soru: MÜDEK Akreditasyonunuz var mı ?\nCevap: Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabiliyor. Bilgisayar Müh. Türkçe programı 2018'den beri öğrenci alıyor, mezun verildiğinde akreditasyon başvurusu yapılacaktır."
     update.message.reply_text(help_message)
 
 def main():
@@ -187,10 +172,6 @@ def main():
     dp.add_handler(CommandHandler("yok_atlas", yok_atlas))
     dp.add_handler(CommandHandler("sep_bilgi", sep_bilgi))
     dp.add_handler(CommandHandler("yazilim_kutuphanesi", yazilim_kutuphanesi))
-    dp.add_handler(CommandHandler("bm_yl_program", bm_yl_program))
-    dp.add_handler(CommandHandler("asm_yl_program", asm_yl_program))
-    dp.add_handler(CommandHandler("bm_yl_akademik_personel", bm_yl_akademik_personel))
-    dp.add_handler(CommandHandler("asm_yl_akademik_personel", asm_yl_akademik_personel))
     dp.add_handler(CommandHandler("erasmus", erasmus))
     dp.add_handler(CommandHandler("farabi", farabi))
     dp.add_handler(CommandHandler("mevlana", mevlana))
