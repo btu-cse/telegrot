@@ -74,8 +74,8 @@ def yardim(update, context):
     help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
     help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
     help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
-    help_message += "/yurt BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?"
-    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?"
+    help_message += "/yurt BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\n"
+    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n"
     update.message.reply_text(help_message)
     
 def hakkinda(update, context):
@@ -115,7 +115,7 @@ def ogrenci_klupleri(update, context):
     update.message.reply_text("Güncellenmektedir.")
 
 def lisans_programi(update, context):
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Ders içeriklerine http://bilgisayar.btu.edu.tr/index.php?sid=6790 adresinden erişebilirsiniz.")
     
 def erasmus(update, context):
     update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır.")
