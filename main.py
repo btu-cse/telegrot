@@ -105,109 +105,87 @@ def yardim(update, context):
     help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
     update.message.reply_text(help_message)
     
-def hakkinda(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def hakkinda(update, context):
     update.message.reply_text("Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından BTÜ Bilgisayar Mühendisliği adına geliştirilmiştir.")
 
-def web_sayfasi(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def web_sayfasi(update, context):
     update.message.reply_text("http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz.")
     
-def akademik_kadro(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def akademik_kadro(update, context):
     update.message.reply_text("Bölüm akademik kadrosuna http://bilgisayar.btu.edu.tr/index.php?page=akademikkadro&sid=6700 adresinden erişebilirsiniz")
     
-def akademik_tanitim(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def akademik_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımızın tanıtım videosuna https://youtu.be/s0CPmkIeVLc adresinden erişebilirsiniz.")
     
-def ogrenci_tanitim(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def ogrenci_tanitim(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def mezun_tanitim(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def mezun_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımız ve mezun öğrencimizin Youtube yayın kaydına https://youtu.be/aCWweagVyK8 adresinden erişebilirsiniz.")
     
 # Creating a handler-function for /start command 
-def bolum_tarihi(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def bolum_tarihi(update, context):
     update.message.reply_text("Bursa Teknik Üniversitesi, Mühendislik ve Mimarlık Fakültesi içerisinde yer alan Bilgisayar Mühendisliği Bölümü 2015 yılında kurulmuştur. 2016 yılında KHK ile kapatılan Bursa Orhangazi Üniversitesi'nin Bilgisayar Mühendisliği (İngilizce) bölümü öğrencilerinin eğitimlerini sürdürebilmesi amacıyla YÖK tarafından bölümümüz İngilizce olarak eğitime başlamıştır. Şu an bölümümüzde 667 Karar Sayılı KHK Kapsamındaki Özel Öğrenciler ve Yabancı Öğrenciler öğrenimlerine %100 ingilizce olarak devam etmektedirler. Bu program, 'Özel ve Yabancı öğrenciler' mezun olduğunda kapanacaktır ve ÖSYM puanıyla öğrenci almamaktadır. Bilgisayar Mühendisliği (Türkçe) programı ise 2018 yılında isteğe bağlı İngilizce hazırlık sınıfı seçeneğiyle kurulmuş olup ilk öğrencilerini 2018 Üniversite Giriş sınavı sonuçlarıyla almıştır.")
     
 # Creating a handler-function for /start command 
-def yok_atlas(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def yok_atlas(update, context):
     update.message.reply_text("Bölüm YÖK Atlas sayfasına https://yokatlas.yok.gov.tr/lisans.php?y=102410190 adresinden erişebilirsiniz.")
 
 # Creating a handler-function for /start command 
-def sep_bilgi(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def sep_bilgi(update, context):
     update.message.reply_text("http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz.")
     
 # Creating a handler-function for /start command 
-def yazilim_kutuphanesi(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def yazilim_kutuphanesi(update, context):
     update.message.reply_text("Bölümümüzün OnTheHub, Oracle Academy, Red Hat Linux ve Microsoft Azure programları ile anlaşması bulunmaktadır. Detaylar için web sayfamızı ziyaret ediniz.")
     
 # Creating a handler-function for /start command 
-def bm_yl_program(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def bm_yl_program(update, context):
     update.message.reply_text("Lisans Ders Planı için http://bilgisayar.btu.edu.tr/index.php?sid=6790 adresini ziyaret ediniz.")
     
 # Creating a handler-function for /start command 
-def asm_yl_program(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def asm_yl_program(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def bm_yl_akademik_personel(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def bm_yl_akademik_personel(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def asm_yl_akademik_personel(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def asm_yl_akademik_personel(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def erasmus(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def erasmus(update, context):
     update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır.")
     
 # Creating a handler-function for /start command 
-def farabi(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def farabi(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def mevlana(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def mevlana(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def laboratuvarlar(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def laboratuvarlar(update, context):
     update.message.reply_text("Bölümümüzde 2 adet 55+1 pc kapasiteli ders laboratuvarı ve 1 adet 20+1 pc kapasiteli özel çalışma laboratuvarı bulunmaktadır. Tüm bilgisayarlarda Linux + Windows işletim sistemleri dual-boot modunda çalıştırılabilmektedir. Cihazların tamamı All-in-One cihazlardır. Ders laboratuvarındaki bilgisayarlar 16 GB Ram ve SSD disk özelliklerine sahiptir.")
 
 # Creating a handler-function for /start command 
-def staj(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def staj(update, context):
     update.message.reply_text("Bölümümüzde mezuniyet için 2 adet zorunlu staj yükümlülüğü bulunmaktadır.")
     
 # Creating a handler-function for /start command 
-def anabilim_dallari(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def anabilim_dallari(update, context):
     update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri ve Bilgisayar Donanımı olmak üzere 3 anabilim dalı bulunmaktadır.")
     
 # Creating a handler-function for /start command 
-def arastirma_gruplari_projeler(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def arastirma_gruplari_projeler(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 # Creating a handler-function for /start command 
-def yayinlar(bot, update):
-    logger.info("User {} started bot".format(update.effective_user["id"]))
+def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
 
 def main():
