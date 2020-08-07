@@ -35,7 +35,42 @@ else:
     sys.exit(1)
 
 #%% Creating handler-functions for /* commands
-def help_command(update, context):
+def start(update, context):
+    """Send a message when the command /help is issued."""
+    
+    help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
+    help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
+    help_message += "Mevcut komutlar; \n\n"
+    help_message += "/help -> Tüm komutları görmek istiyorum\n"
+    help_message += "/about BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
+    help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
+    help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
+    help_message += "/ogrenci_tanitim Bölüm öğrencilerinin tanıtım videosunu görüntülemek istiyorum\n"
+    help_message += "/mezun_tanitim Bölüm mezunlarının tanıtım videosunu görüntülemek istiyorum\n"
+    help_message += "/akademik_personel Akademik personel hakkında bilgi almak istiyorum\n"
+    help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n"
+    help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
+    help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
+    help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
+    help_message += "/yazılım_kütüphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
+    help_message += "/lisans_program Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
+    help_message += "/bm_yl_program Bilgisayar Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
+    help_message += "/asm_yl_program Akıllı Sistemler Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
+    help_message += "/bm_yl_akademik_personel Bilgisayar Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
+    help_message += "/asm_yl_akademik_personel Akıllı Sistemler Mühendisliği Yüksek Lisans Akademik Personeli hakkında bilgi almak istiyorum\n"
+    help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
+    help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
+    help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
+    help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
+    help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
+    help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
+    help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
+    help_message += "/anabilim_dalları Anabilim dallarını incelemek istiyorum\n"
+    help_message += "/arastirma_grupları_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
+    help_message += "/yayınlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
+    update.message.reply_text(help_message)
+
+def yardim(update, context):
     """Send a message when the command /help is issued."""
     
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
@@ -72,7 +107,7 @@ def help_command(update, context):
     
 def hakkinda(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
-    update.message.reply_text("Fatih Ateş, Furkan Portakal ve Arş. Gör. Ahmet Kaşif tarafından BTÜ Bilgisayar Mühendisliği adına geliştirilmiştir.")
+    update.message.reply_text("Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından BTÜ Bilgisayar Mühendisliği adına geliştirilmiştir.")
 
 def web_sayfasi(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
@@ -93,7 +128,7 @@ def ogrenci_tanitim(bot, update):
 # Creating a handler-function for /start command 
 def mezun_tanitim(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Bölüm başkanımız ve mezun öğrencimizin Youtube yayın kaydına https://youtu.be/aCWweagVyK8 adresinden erişebilirsiniz.")
     
 # Creating a handler-function for /start command 
 def bolum_tarihi(bot, update):
@@ -153,17 +188,17 @@ def mevlana(bot, update):
 # Creating a handler-function for /start command 
 def laboratuvarlar(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Bölümümüzde 2 adet 55+1 pc kapasiteli ders laboratuvarı ve 1 adet 20+1 pc kapasiteli özel çalışma laboratuvarı bulunmaktadır. Tüm bilgisayarlarda Linux + Windows işletim sistemleri dual-boot modunda çalıştırılabilmektedir. Cihazların tamamı All-in-One cihazlardır. Ders laboratuvarındaki bilgisayarlar 16 GB Ram ve SSD disk özelliklerine sahiptir.")
 
 # Creating a handler-function for /start command 
 def staj(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Bölümümüzde mezuniyet için 2 adet zorunlu staj yükümlülüğü bulunmaktadır.")
     
 # Creating a handler-function for /start command 
 def anabilim_dallari(bot, update):
     logger.info("User {} started bot".format(update.effective_user["id"]))
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri ve Bilgisayar Donanımı olmak üzere 3 anabilim dalı bulunmaktadır.")
     
 # Creating a handler-function for /start command 
 def arastirma_gruplari_projeler(bot, update):
@@ -185,28 +220,28 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("yardim", help_command))
-    dp.add_handler(CommandHandler("hakkinda", help_command))
-    dp.add_handler(CommandHandler("web_sayfasi", help_command))
-    dp.add_handler(CommandHandler("akademik_tanitim", help_command))
-    dp.add_handler(CommandHandler("ogrenci_tanitim", help_command))
-    dp.add_handler(CommandHandler("mezun_tanitim", help_command))
-    dp.add_handler(CommandHandler("bolum_tarihi", help_command))
-    dp.add_handler(CommandHandler("yok_atlas", help_command))
-    dp.add_handler(CommandHandler("sep_bilgi", help_command))
-    dp.add_handler(CommandHandler("yazilim_kutuphanesi", help_command))
-    dp.add_handler(CommandHandler("bm_yl_program", help_command))
-    dp.add_handler(CommandHandler("asm_yl_program", help_command))
-    dp.add_handler(CommandHandler("bm_yl_akademik_personel", help_command))
-    dp.add_handler(CommandHandler("asm_yl_akademik_personel", help_command))
-    dp.add_handler(CommandHandler("erasmus", help_command))
-    dp.add_handler(CommandHandler("farabi", help_command))
-    dp.add_handler(CommandHandler("mevlana", help_command))
-    dp.add_handler(CommandHandler("laboratuvarlar", help_command))
-    dp.add_handler(CommandHandler("staj", help_command))
-    dp.add_handler(CommandHandler("anabilim_dallari", help_command))
-    dp.add_handler(CommandHandler("arastirma_gruplari_projeler", help_command))
-    dp.add_handler(CommandHandler("yayinlar", help_command))
+    dp.add_handler(CommandHandler("yardim", yardim))
+    dp.add_handler(CommandHandler("hakkinda", hakkinda))
+    dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
+    dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
+    dp.add_handler(CommandHandler("ogrenci_tanitim", ogrenci_tanitim))
+    dp.add_handler(CommandHandler("mezun_tanitim", mezun_tanitim))
+    dp.add_handler(CommandHandler("bolum_tarihi", bolum_tarihi))
+    dp.add_handler(CommandHandler("yok_atlas", yok_atlas))
+    dp.add_handler(CommandHandler("sep_bilgi", sep_bilgi))
+    dp.add_handler(CommandHandler("yazilim_kutuphanesi", yazilim_kutuphanesi))
+    dp.add_handler(CommandHandler("bm_yl_program", bm_yl_program))
+    dp.add_handler(CommandHandler("asm_yl_program", asm_yl_program))
+    dp.add_handler(CommandHandler("bm_yl_akademik_personel", bm_yl_akademik_personel))
+    dp.add_handler(CommandHandler("asm_yl_akademik_personel", asm_yl_akademik_personel))
+    dp.add_handler(CommandHandler("erasmus", erasmus))
+    dp.add_handler(CommandHandler("farabi", farabi))
+    dp.add_handler(CommandHandler("mevlana", mevlana))
+    dp.add_handler(CommandHandler("laboratuvarlar", laboratuvarlar))
+    dp.add_handler(CommandHandler("staj", staj))
+    dp.add_handler(CommandHandler("anabilim_dallari", anabilim_dallari))
+    dp.add_handler(CommandHandler("arastirma_gruplari_projeler", arastirma_gruplari_projeler))
+    dp.add_handler(CommandHandler("yayinlar", yayinlar))
     
     # Start the Bot
     updater.start_polling()
