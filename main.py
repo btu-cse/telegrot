@@ -59,7 +59,7 @@ def yardim(update, context):
     help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
     help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
     help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
-    help_message += "/yazılım_kütüphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
+    help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
     help_message += "/lisans_program Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
     help_message += "/bm_yl_program Bilgisayar Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
     help_message += "/asm_yl_program Akıllı Sistemler Mühendisliği Yüksek Lisans eğitim müfredatını görüntülemek istiyorum\n"
