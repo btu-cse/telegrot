@@ -48,41 +48,44 @@ def yardim(update, context):
     
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
+    help_message += "Grupta bulunduğunuz süre içerisinde diğer adaylar ve bölüm personeli ile saygı ve iyi niyet çerçevesinde iletişim kurmaya ve grubun amacı dışında herhangi bir söylemde bulunmamaya özen gösteriniz.\n\n"
     help_message += "Mevcut komutlar; \n\n"
-    help_message += "/yardim -> Tüm komutları görmek istiyorum\n"
-    help_message += "/hakkinda BMTanıtımBOT Geliştirici ekibi hakkında bilgi almak istiyorum\n"
-    help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n"
-    help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n"
-    help_message += "/youtube_tanitim Youtube'da BTÜ Bilgisayar Mühendisliği'nin tanıtıldığı kayıtlara erişmek istiyorum.\n"
-    help_message += "/akademik_kadro Akademik personel hakkında bilgi almak istiyorum\n"
-    help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n"
-    help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n"
-    help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n"
-    help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n"
-    help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n"
-    help_message += "/ogrencimiz_gozunden Bölümümüzü bir de öğrencimizden dinleyin\n"
-    help_message += "/ogrenci_klupleri Üniversitenin öğrenci klüpleri listesine erişmek istiyorum.\n"
-    help_message += "/lisans_programi Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n"
-    help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n"
-    help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n"
-    help_message += "/ogrencimiz_gozunden Öğrencilerinin gözünden BTÜ Bilgisayar Mühendisliği\○n"
-    help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n"
-    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n"
-    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n"
-    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n"
-    help_message += "/yurt BTÜ'de telegram hizmeti veren diğer bölümlere nasıl ulaşabilirim ?\n"
-    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n"
+    help_message += "/yardim Tüm komutları görmek istiyorum\n\n"
+    help_message += "/hakkinda Geliştirici ekibi hakkında bilgi edinmek istiyorum\n\n"
+    help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n\n"
+    help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n\n"
+    help_message += "/youtube_tanitim Youtube'da BTÜ Bilgisayar Mühendisliği'nin tanıtıldığı kayıtlara erişmek istiyorum\n\n"
+    help_message += "/akademik_kadro Akademik personel hakkında bilgi almak istiyorum\n\n"
+    help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n\n"
+    help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n\n"
+    help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n\n"
+    help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n\n"
+    help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n\n"
+    help_message += "/ogrencimiz_gozunden Bölümümüzü bir de öğrencimizden dinleyin\n\n"
+    help_message += "/ogrenci_klupleri Üniversitenin öğrenci klüpleri listesine erişmek istiyorum\n\n"
+    help_message += "/lisans_programi Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n\n"
+    help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
+    help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
+    help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
+    help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
+    help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
+    help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n\n"
+    help_message += "/ogrencimiz_gozunden Öğrencilerinin gözünden BTÜ Bilgisayar Mühendisliği\n\n"
+    help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n\n"
+    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n\n"
+    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n\n"
+    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n\n"
+    help_message += "/yurt BTÜ yurt hizmetleri nelerdir ? \n\n"
+    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n\n"
+    help_message += "/mezun_yl Üniversiteden mezun olduktan sonra yurt dışına master yapmaya giden öğrenciler oluyor mu ?"
+    help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?"
     update.message.reply_text(help_message)
     
 def hakkinda(update, context):
-    update.message.reply_text("Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından BTÜ Bilgisayar Mühendisliği adına geliştirilmiştir.")
+    update.message.reply_text("Tanıtım destek botumuz, bölüm öğrencilerimiz Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif")
 
 def web_sayfasi(update, context):
-    update.message.reply_text("http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz.")
+    update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz.")
     
 def akademik_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımızın tanıtım videosuna https://youtu.be/s0CPmkIeVLc adresinden erişebilirsiniz.")
@@ -112,22 +115,22 @@ def ogrencimiz_gozunden(update, context):
     update.message.reply_text("Bölüm öğrencimiz Furkan Portakal'ın medium makalesine https://medium.com/@furkanportakal/neden-bursa-teknik-ed101c4a78f3 adresinden erişebilirsiniz.")
 
 def ogrenci_klupleri(update, context):
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("BTÜ Öğrenci klüpleri listesine http://www.btu.edu.tr/index.php?sid=48 adresinden erişebilirsiniz.")
 
 def lisans_programi(update, context):
     update.message.reply_text("Ders içeriklerine http://bilgisayar.btu.edu.tr/index.php?sid=6790 adresinden erişebilirsiniz.")
     
 def erasmus(update, context):
-    update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır.")
+    update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır. Geçtiğimiz yıl 2 öğrenci Erasmus ile yurtdışında eğitim görme hakkı elde etmiştir.")
     
 def farabi(update, context):
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("BTÜ Farabi koordinatörlük sayfasına http://farabi.btu.edu.tr/ adresinden erişebilirsiniz.")
     
 def mevlana(update, context):
     update.message.reply_text("Güncellenmektedir.")
     
 def cap(update, context):
-    update.message.reply_text("Güncellenmektedir.")
+    update.message.reply_text("Bilgisayar Mühendisliği öğrencilerinin BTÜ'deki diğer tüm bölümler ile ÇAP yapma imkanı bulunmaktadır")
     
 def yandal(update, context):
     update.message.reply_text("Güncellenmektedir.")
@@ -152,6 +155,12 @@ def yurt(update, context):
 
 def mudek(update, context):
     update.message.reply_text("Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabiliyor. Bilgisayar Müh. Türkçe programı 2018'den beri öğrenci alıyor, mezun verildiğinde akreditasyon başvurusu yapılacaktır")
+
+def mezun_yl(update, context):
+    update.message.reply_text("Bölümümüz 2017 den beri mezun vermektedir, bu mezunların büyük bir kısmı yabancı kökenli öğrenciler olduğu için çoğu yurt dışındadır. Bu yıl mezun olan öğrencilerilerimizden bir öğrencimiz de bu gruptadır, diplomasını aldığı gün Bursa'da Nestle Ar-Ge merkezinde işe başladı")
+
+def prog_dilleri(update, context):
+    update.message.reply_text("Bölümümüzde eğitim gören öğrenciler, 4 yıllık eğitimleri boyunca C, C++, C#, Python, Java, Html, Javascript, CSS, XML, PHP dilleri ile aşina olmakta, SEP programı ile entegre sektörde kodlama tecrübelerini pekiştirmektedirler.")
 
 def main():
     # Create the Updater and pass it your bot's token.
@@ -190,7 +199,9 @@ def main():
     dp.add_handler(CommandHandler("yayinlar", yayinlar))
     dp.add_handler(CommandHandler("yurt", yurt))
     dp.add_handler(CommandHandler("mudek", mudek))
-    
+    dp.add_handler(CommandHandler("mezun_yl", mezun_yl))
+    dp.add_handler(CommandHandler("prog_dilleri", prog_dilleri))
+
     # Start the Bot
     updater.start_polling()
 
