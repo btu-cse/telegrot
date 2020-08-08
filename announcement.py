@@ -12,7 +12,7 @@ from threading import Thread, Event
 from telegram.ext import Updater, CommandHandler
 
 #%% variables
-TOKEN = os.getenv("TOKEN", "1261974897:AAFlZHNkXCpjxSuVN3lNCdmE4z8ZV2IBfl8")
+TOKEN = os.getenv("TOKEN_REPLICA")
 url = "https://api.telegram.org/bot" + TOKEN
 
 #%% initialization
