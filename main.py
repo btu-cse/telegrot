@@ -46,7 +46,7 @@ class myThread(Thread):
         self.update = update;
 
     def getAnnouncement(self, announcement):
-        SITEURL = 'http://www.btu.edu.tr/index.php?dyr=' + str(announcement)
+        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php?page=duyuru' + (announcement != 0 if  str('&id='+announcement) else '')
 
         page = requests.get(SITEURL)
         return page
