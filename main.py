@@ -4,6 +4,11 @@ import random
 import sys
 import requests
 
+from bs4 import BeautifulSoup
+from time import sleep
+from threading import Thread, Event
+
+
 from telegram.ext import Updater, CommandHandler
 
 #%% variables
@@ -34,10 +39,58 @@ else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
+class myThread(Thread):
+    def __init__(self, update, *args, **kwarg):
+        super().__init__(*args, **kwarg)
+        self.running_event = Event()
+        self.update = update;
+
+    def getAnnouncement(self, announcement):
+        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php?page=duyuru' + (announcement != 0 if  str('&id='+announcement) else '')
+
+        page = requests.get(SITEURL)
+        return page
+
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        container = soup.find_all("div", {"class" : "container"})[1]
+        row = container.find_all("div", {"class" : "row"})[0]
+        column = row.find_all("div", {"class" : "col-md-9"})[0]
+
+        if announcement == 0:
+            table = column.find_all('table')[0]
+            href_link = column.find_all('a')[0]
+            return href_link.get('href')
+        else:
+            panel = column.find_all("div", {"class" : "panel"})[0]
+            panel_body = panel.find_all('div')[1]
+            return panel_body
+
+    def run(self):
+        while not self.running_event.isSet():
+            try:
+                last = self.getAnnouncement(0)
+                print(last.status)
+                update = self.update
+                while not self.running_event.isSet():
+                    sleep(2)
+                    newLast = self.getAnnouncement(0)
+                    if last != newLast:
+                        last = newLast
+                        parsedUrl = urlparse.urlparse(last)
+                        id_query = urlparse.parse_qs(parsed.query)['id']
+                        update.message.reply_text(self.getAnnouncement(id_query))
+                break;
+            except:
+                print("Siteye şu anda ulaşılamıyor...")
+
+    def stop_thread(self):
+        self.running_event.set()
+
 #%% Creating handler-functions for /* commands
 def start(update, context):
     """Send a message when the command /help is issued."""
-    
+
     help_message = "Merhaba, BTÜ ve Bilgisayar Mühendisliği Bölümü hakkında sorularınızı cevaplandırmak üzere buradayım."
     help_message = "Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır."
     help_message += "Mevcut komutları görmek için /help komutunu kullanabilirsin.\n"
@@ -45,7 +98,7 @@ def start(update, context):
 
 def help(update, context):
     """Send a message when the command /help is issued."""
-    
+
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n"
     help_message += "Grupta bulunduğunuz süre içerisinde diğer adaylar ve bölüm personeli ile saygı ve iyi niyet çerçevesinde iletişim kurmaya ve grubun amacı dışında herhangi bir söylemde bulunmamaya özen gösteriniz.\n"
@@ -80,16 +133,16 @@ def help(update, context):
     help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n"
     help_message += "/btubm_sosyal Sosyal medya hesaplarımız\n"
     update.message.reply_text(help_message)
-    
+
 def hakkinda(update, context):
     update.message.reply_text("Tanıtım destek botumuz, bölüm öğrencilerimiz Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif")
 
 def web_sayfasi(update, context):
     update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz.")
-    
+
 def akademik_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımızın tanıtım videosuna https://youtu.be/s0CPmkIeVLc adresinden erişebilirsiniz.")
-    
+
 def youtube_tanitim(update, context):
     update.message.reply_text("Bölüm başkanımız ve mezun öğrencimizin Youtube yayın kaydına https://youtu.be/aCWweagVyK8 adresinden erişebilirsiniz.")
 
@@ -98,13 +151,13 @@ def akademik_kadro(update, context):
 
 def bolum_tarihi(update, context):
     update.message.reply_text("Bursa Teknik Üniversitesi, Mühendislik ve Mimarlık Fakültesi içerisinde yer alan Bilgisayar Mühendisliği Bölümü 2015 yılında kurulmuştur. 2016 yılında KHK ile kapatılan Bursa Orhangazi Üniversitesi'nin Bilgisayar Mühendisliği (İngilizce) bölümü öğrencilerinin eğitimlerini sürdürebilmesi amacıyla YÖK tarafından bölümümüz İngilizce olarak eğitime başlamıştır. Şu an bölümümüzde 667 Karar Sayılı KHK Kapsamındaki Özel Öğrenciler ve Yabancı Öğrenciler öğrenimlerine %100 ingilizce olarak devam etmektedirler. Bu program, 'Özel ve Yabancı öğrenciler' mezun olduğunda kapanacaktır ve ÖSYM puanıyla öğrenci almamaktadır. Bilgisayar Mühendisliği (Türkçe) programı ise 2018 yılında isteğe bağlı İngilizce hazırlık sınıfı seçeneğiyle kurulmuş olup ilk öğrencilerini 2018 Üniversite Giriş sınavı sonuçlarıyla almıştır.")
-    
+
 def yok_atlas(update, context):
     update.message.reply_text("Bölüm YÖK Atlas sayfasına https://yokatlas.yok.gov.tr/lisans.php?y=102410190 adresinden erişebilirsiniz.")
 
 def sep_bilgi(update, context):
     update.message.reply_text("SEP programı ÖSYM kılavuzunda özel koşul olarak yer almaktadır, bütün öğrencilerimiz dahildir. 7 dönem ders ve 1 dönem proje bazlı işyeri eğitimi vardır. İşyeri eğitimi süresince devlet tarafından SGK nız ödenir ve asgari ücretin 1/3 ü kadar maaş alırsınız. İşyeri eğitimi yaptığınız işveren sizi işe aldığında işverene de devlet teşviği vardır. Daha fazlası için http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz.")
-    
+
 def sep_anlasmali_sirketler(update, context):
     update.message.reply_text("SEP anlaşmalı şirketler listesine http://sep.btu.edu.tr adresinden erişebilirsiniz.")
 
@@ -119,37 +172,37 @@ def ogrenci_klupleri(update, context):
 
 def lisans_programi(update, context):
     update.message.reply_text("Ders içeriklerine http://bilgisayar.btu.edu.tr/index.php?sid=6790 adresinden erişebilirsiniz.")
-    
+
 def erasmus(update, context):
     update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır. Geçtiğimiz yıl 2 öğrenci Erasmus ile yurtdışında eğitim görme hakkı elde etmiştir.")
-    
+
 def farabi(update, context):
     update.message.reply_text("BTÜ Farabi koordinatörlük sayfasına http://farabi.btu.edu.tr/ adresinden erişebilirsiniz.")
-    
+
 def mevlana(update, context):
     update.message.reply_text("Güncellenmektedir.")
-    
+
 def cap(update, context):
     update.message.reply_text("Bilgisayar Mühendisliği öğrencilerinin BTÜ'deki diğer tüm bölümler ile ÇAP yapma imkanı bulunmaktadır")
-    
+
 def yandal(update, context):
     update.message.reply_text("Güncellenmektedir.")
-    
+
 def laboratuvarlar(update, context):
     update.message.reply_text("Bölümümüzde 2 adet 55+1 pc kapasiteli ders laboratuvarı ve 1 adet 20+1 pc kapasiteli özel çalışma laboratuvarı bulunmaktadır. Tüm bilgisayarlarda Linux + Windows işletim sistemleri dual-boot modunda çalıştırılabilmektedir. Cihazların tamamı All-in-One cihazlardır. Ders laboratuvarındaki bilgisayarlar 16 GB Ram ve SSD disk özelliklerine sahiptir.")
 
 def staj(update, context):
     update.message.reply_text("Bölümümüzde mezuniyet için 2 adet zorunlu staj yükümlülüğü bulunmaktadır.")
-    
+
 def anabilim_dallari(update, context):
     update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri ve Bilgisayar Donanımı olmak üzere 3 anabilim dalı bulunmaktadır.")
-    
+
 def arastirma_gruplari_projeler(update, context):
     update.message.reply_text("Güncellenmektedir.")
-    
+
 def yayinlar(update, context):
     update.message.reply_text("Güncellenmektedir.")
-    
+
 def yurt(update, context):
     update.message.reply_text("Özel yurt olanakları hem kız hem erkek öğrenciler için Üniversite kampüsleri yakınında bulunmaktadır. Erkek öğrenciler için Mimar Sinan kampüsünün yanı başında KYK yurdu bulunmakta, kız öğrenciler için ise henüz bir devlet yurdu imkanı bulunmamaktadır. Bununla birlikte inşaatı ve projelendirmesi devam eden 2 kız yurdu projesi bulunmaktadır. Bunlardan Mimar Sinan kampüsü içerisindekinin 2021 bahar yarıyılı sonuna kadar tamamlanması hedeflenmektedir.")
 
@@ -164,6 +217,27 @@ def prog_dilleri(update, context):
 
 def btubm_sosyal(update, context):
     update.message.reply_text("Instagram hesabımıza @btu.bm adı üzerinden erişebilirsiniz. Hesap, bölümümüz öğrencileri tarafından yönetilmektedir.")
+
+def replica_start(update, context):
+    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+    global announcement_thread
+    if user.status == "creator" or user.status == "administrator":
+        update.message.reply_text("Komut başarıyla çalıştırıldı.")
+        announcement_thread = myThread(update)
+        announcement_thread.start()
+    else:
+        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
+
+# Creating a handler-function for /start command
+def replica_stop(update, context):
+    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+    global announcement_thread
+    if user.status == "creator" or user.status == "administrator":
+        update.message.reply_text("Komut başarıyla çalıştırıldı.")
+        if announcement_thread != None:
+            announcement_thread.stop_thread()
+    else:
+        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 def main():
     # Create the Updater and pass it your bot's token.
@@ -205,6 +279,8 @@ def main():
     dp.add_handler(CommandHandler("mezun_yl", mezun_yl))
     dp.add_handler(CommandHandler("prog_dilleri", prog_dilleri))
     dp.add_handler(CommandHandler("btubm_sosyal", btubm_sosyal))
+    dp.add_handler(CommandHandler("rstart", replica_start))
+    dp.add_handler(CommandHandler("rstop", replica_stop))
 
     # Start the Bot
     updater.start_polling()
