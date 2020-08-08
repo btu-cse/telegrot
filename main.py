@@ -3,6 +3,7 @@ import os
 import random
 import sys
 import requests
+import urllib.parse as urlparse
 
 from bs4 import BeautifulSoup
 from time import sleep
@@ -46,41 +47,41 @@ class myThread(Thread):
         self.update = update;
 
     def getAnnouncement(self, announcement):
-        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php?page=duyuru' + (announcement != 0 if  str('&id='+announcement) else '')
-
-        page = requests.get(SITEURL)
-        return page
-
+        params = {'page':'duyuru'}
+        if announcement != 0 :
+            params = {'page':'duyuru','id':announcement}
+        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
+        print(announcement)
+        page = requests.get(SITEURL, params=params)
         soup = BeautifulSoup(page.content, 'html.parser')
-
-        container = soup.find_all("div", {"class" : "container"})[1]
+        container = soup.find_all("div", {"class" : "container"})[2]
         row = container.find_all("div", {"class" : "row"})[0]
         column = row.find_all("div", {"class" : "col-md-9"})[0]
 
         if announcement == 0:
+
             table = column.find_all('table')[0]
-            href_link = column.find_all('a')[0]
-            return href_link.get('href')
+            href_link = table.find_all('a')[0]
+            return href_link
         else:
-            panel = column.find_all("div", {"class" : "panel"})[0]
+            panel = column.find_all("div", {"class":"panel"})[0]
             panel_body = panel.find_all('div')[1]
             return panel_body
 
     def run(self):
         while not self.running_event.isSet():
             try:
-                last = self.getAnnouncement(0)
-                print(last.status)
+                last = self.getAnnouncement(0).get('href')
                 update = self.update
                 while not self.running_event.isSet():
                     sleep(2)
-                    newLast = self.getAnnouncement(0)
+                    newLast = self.getAnnouncement(0).get('href')
                     if last != newLast:
+                        id_query = newLast.split('&')[1].split('=')[1]
+                        print(self.getAnnouncement(id_query))
+                        update.message.reply_text(str(self.getAnnouncement(id_query)))
                         last = newLast
-                        parsedUrl = urlparse.urlparse(last)
-                        id_query = urlparse.parse_qs(parsed.query)['id']
-                        update.message.reply_text(self.getAnnouncement(id_query))
-                break;
+                        break;
             except:
                 print("Siteye şu anda ulaşılamıyor...")
 
@@ -222,12 +223,12 @@ def btubm_sosyal(update, context):
 def replica_start(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
     global announcement_thread
-    if user.status == "creator" or user.status == "administrator":
-        update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        announcement_thread = myThread(update)
-        announcement_thread.start()
-    else:
-        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
+    #if user.status == "creator" or user.status == "administrator":
+    update.message.reply_text("Komut başarıyla çalıştırıldı.")
+    announcement_thread = myThread(update)
+    announcement_thread.start()
+    #else:
+        #update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 # Creating a handler-function for /start command
 def replica_stop(update, context):
