@@ -51,7 +51,7 @@ class myThread(Thread):
         if announcement != 0 :
             params = {'page':'duyuru','id':announcement}
         SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
-        print(announcement)
+
         page = requests.get(SITEURL, params=params)
         soup = BeautifulSoup(page.content, 'html.parser')
         container = soup.find_all("div", {"class" : "container"})[2]
