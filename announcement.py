@@ -92,6 +92,7 @@ def replica_start(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
     global announcement_thread
     if user.status == "creator" or user.status == "administrator":
+        update.message.reply_text("Komut başarıyla çalıştırıldı.")
         announcement_thread = myThread(update)
         announcement_thread.start()
     else:
@@ -102,6 +103,7 @@ def replica_stop(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
     global announcement_thread
     if user.status == "creator" or user.status == "administrator":
+        update.message.reply_text("Komut başarıyla çalıştırıldı.")
         if announcement_thread != None:
             announcement_thread.stop_thread()
     else:
