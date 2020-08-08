@@ -79,6 +79,7 @@ def yardim(update, context):
     help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n\n"
     help_message += "/mezun_yl Üniversiteden mezun olduktan sonra yurt dışına master yapmaya giden öğrenciler oluyor mu ?\n\n"
     help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n\n"
+    help_message += "/btubm_sosyal Sosyal medya hesaplarınız var mıdır ? Nasıl erişebilirim ?\n\n"
     update.message.reply_text(help_message)
     
 def hakkinda(update, context):
@@ -162,6 +163,9 @@ def mezun_yl(update, context):
 def prog_dilleri(update, context):
     update.message.reply_text("Bölümümüzde eğitim gören öğrenciler, 4 yıllık eğitimleri boyunca C, C++, C#, Python, Java, Html, Javascript, CSS, XML, PHP dilleri ile aşina olmakta, SEP programı ile entegre sektörde kodlama tecrübelerini pekiştirmektedirler.")
 
+def btubm_sosyal(update, context):
+    update.message.reply_text("Instagram hesabımıza @btu.bm adı üzerinden erişebilirsiniz. Hesap, bölümümüz öğrencileri tarafından yönetilmektedir.")
+
 def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
@@ -201,6 +205,7 @@ def main():
     dp.add_handler(CommandHandler("mudek", mudek))
     dp.add_handler(CommandHandler("mezun_yl", mezun_yl))
     dp.add_handler(CommandHandler("prog_dilleri", prog_dilleri))
+    dp.add_handler(CommandHandler("btubm_sosyal", btubm_sosyal))
 
     # Start the Bot
     updater.start_polling()
