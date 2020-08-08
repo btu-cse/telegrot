@@ -77,8 +77,8 @@ def yardim(update, context):
     help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n\n"
     help_message += "/yurt BTÜ yurt hizmetleri nelerdir ? \n\n"
     help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n\n"
-    help_message += "/mezun_yl Üniversiteden mezun olduktan sonra yurt dışına master yapmaya giden öğrenciler oluyor mu ?"
-    help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?"
+    help_message += "/mezun_yl Üniversiteden mezun olduktan sonra yurt dışına master yapmaya giden öğrenciler oluyor mu ?\n\n"
+    help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n\n"
     update.message.reply_text(help_message)
     
 def hakkinda(update, context):
