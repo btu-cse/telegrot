@@ -55,12 +55,15 @@ class myThread(Thread):
 
         container = soup.find_all("div", {"class" : "container"})[1]
         row = container.find_all("div", {"class" : "row"})[0]
-        panel_body = row.find_all("div", {"class" : "panel-body"})[0]
+        column = row.find_all("div", {"class" : "col-md-9"})[0]
 
         if announcement == 0:
-            href_link = panel_body.find_all('a')[0]
+            table = column.find_all('table')[0]
+            href_link = column.find_all('a')[0]
             return href_link.get('href')
         else:
+            panel = column.find_all("div", {"class" : "panel"})[0]
+            panel_body = panel.find_all('div')[1]
             return panel_body
 
     def run(self):
@@ -75,8 +78,8 @@ class myThread(Thread):
                     if last != newLast:
                         last = newLast
                         parsedUrl = urlparse.urlparse(last)
-                        dyr_query = urlparse.parse_qs(parsed.query)['dyr']
-                        update.message.reply_text(self.getAnnouncement(dyr_query))
+                        id_query = urlparse.parse_qs(parsed.query)['id']
+                        update.message.reply_text(self.getAnnouncement(id_query))
                 break;
             except:
                 print("Siteye şu anda ulaşılamıyor...")
