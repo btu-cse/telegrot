@@ -7,7 +7,7 @@ import requests
 from telegram.ext import Updater, CommandHandler
 
 #%% variables
-TOKEN = os.getenv("TOKEN_REPLICA")
+TOKEN = os.getenv("TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
 
 #%% initialization
