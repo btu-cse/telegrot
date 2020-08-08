@@ -94,46 +94,45 @@ def start(update, context):
 
     help_message = "Merhaba, BTÜ ve Bilgisayar Mühendisliği Bölümü hakkında sorularınızı cevaplandırmak üzere buradayım."
     help_message = "Bu grup sadece Bilgisayar Mühendisliği öğrenci adayları için oluşturulmuş olup, diğer bölüm personelleri ile iletişime geçmeniz gerekmektedir. Bununla birlikte bildiğimiz kadarıyla Elektrik-Elektronik bölümünün de bir Telegram grubu bulunmaktadır."
-    help_message += "Mevcut komutları görmek için /yardim komutunu kullanabilirsin.\n"
+    help_message += "Mevcut komutları görmek için /help komutunu kullanabilirsin.\n"
     update.message.reply_text(help_message)
 
-def yardim(update, context):
+def help(update, context):
     """Send a message when the command /help is issued."""
 
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
-    help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n\n"
-    help_message += "Grupta bulunduğunuz süre içerisinde diğer adaylar ve bölüm personeli ile saygı ve iyi niyet çerçevesinde iletişim kurmaya ve grubun amacı dışında herhangi bir söylemde bulunmamaya özen gösteriniz.\n\n"
-    help_message += "Mevcut komutlar; \n\n"
-    help_message += "/yardim Tüm komutları görmek istiyorum\n\n"
-    help_message += "/hakkinda Geliştirici ekibi hakkında bilgi edinmek istiyorum\n\n"
-    help_message += "/web_sayfasi BTÜ BM Web sayfasına erişmek istiyorum\n\n"
-    help_message += "/akademik_tanitim Bölüm başkanlığı tanıtım videosunu görüntülemek istiyorum\n\n"
-    help_message += "/youtube_tanitim Youtube'da BTÜ Bilgisayar Mühendisliği'nin tanıtıldığı kayıtlara erişmek istiyorum\n\n"
-    help_message += "/akademik_kadro Akademik personel hakkında bilgi almak istiyorum\n\n"
-    help_message += "/bolum_tarihi Bölümün tarihi hakkında bilgi almak istiyorum\n\n"
-    help_message += "/yok_atlas Bölüm YÖK Atlas sayfasına erişmek istiyorum\n\n"
-    help_message += "/sep_bilgi BTÜ Sektörel Eğitim Programı hakkında bilgi almak istiyorum\n\n"
-    help_message += "/sep_anlasmali_sirketler BTÜ-SEP kapsamında bölümün anlaşmalı olduğu şirketlerin listesini incelemek istiyorum\n\n"
-    help_message += "/yazilim_kutuphanesi Bölümün anlaşmalı olduğu yazılım programlarının listesini verir.\n\n"
+    help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n"
+    help_message += "Grupta bulunduğunuz süre içerisinde diğer adaylar ve bölüm personeli ile saygı ve iyi niyet çerçevesinde iletişim kurmaya ve grubun amacı dışında herhangi bir söylemde bulunmamaya özen gösteriniz.\n"
+    help_message += "Mevcut komutlar; \n"
+    help_message += "/help - Tüm komutları görmek istiyorum\n"
+    help_message += "/hakkinda - Geliştirici ekibi\n"
+    help_message += "/web_sayfasi - BTÜ BM Web sayfası\n"
+    help_message += "/akademik_tanitim - Bölüm başkanlığı tanıtım videosu\n"
+    help_message += "/youtube_tanitim - Youtube'da BTÜ BM tanıtım videosu\n"
+    help_message += "/akademik_kadro - Akademik kadro\n"
+    help_message += "/bolum_tarihi - Bölümün tarihi\n"
+    help_message += "/yok_atlas - YÖK Atlas sayfasına\n"
+    help_message += "/sep_bilgi - BTÜ Sektörel Eğitim Programı\n"
+    help_message += "/sep_anlasmali_sirketler BTÜ-SEP anlaşmalı şirketler\n"
+    help_message += "/yazilim_kutuphanesi Bölüm ile anlaşmalı yazılımlar\n"
     help_message += "/ogrencimiz_gozunden Bölümümüzü bir de öğrencimizden dinleyin\n\n"
-    help_message += "/ogrenci_klupleri Üniversitenin öğrenci klüpleri listesine erişmek istiyorum\n\n"
-    help_message += "/lisans_programi Bilgisayar Mühendisliği Lisans eğitim müfredatını görüntülemek istiyorum\n\n"
-    help_message += "/erasmus Erasmus kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
-    help_message += "/farabi Farabi kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
-    help_message += "/mevlana Mevlana kontenjanları, anlaşmalı ülkelerin listesi, başvurmak için gerekli kısıtlar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
-    help_message += "/cap ÇAP programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
-    help_message += "/yandal Yandal programı için koşullar ve başvuru süreci hakkında bilgi almak istiyorum\n\n"
-    help_message += "/laboratuvarlar Bölüm laboratuvarları hakkında bilgi almak istiyorum\n\n"
-    help_message += "/ogrencimiz_gozunden Öğrencilerinin gözünden BTÜ Bilgisayar Mühendisliği\n\n"
-    help_message += "/staj Staj süreçlerini ve şartlarını öğrenmek istiyorum\n\n"
-    help_message += "/anabilim_dallari Anabilim dallarını incelemek istiyorum\n\n"
-    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeleri incelemek istiyorum\n\n"
-    help_message += "/yayinlar Bölüm akademik kadrosu tarafından yapılan akademik yayınları incelemek istiyorum\n\n"
-    help_message += "/yurt BTÜ yurt hizmetleri nelerdir ? \n\n"
-    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n\n"
-    help_message += "/mezun_yl Üniversiteden mezun olduktan sonra yurt dışına master yapmaya giden öğrenciler oluyor mu ?\n\n"
-    help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n\n"
-    help_message += "/btubm_sosyal Sosyal medya hesaplarınız var mıdır ? Nasıl erişebilirim ?\n\n"
+    help_message += "/ogrenci_klupleri BTÜ öğrenci klüpleri\n"
+    help_message += "/lisans_programi Lisans eğitim planı\n"
+    help_message += "/erasmus Erasmus\n\n"
+    help_message += "/farabi Farabi \n"
+    help_message += "/mevlana Mevlana\n"
+    help_message += "/cap ÇAP \n"
+    help_message += "/yandal Yandal\n"
+    help_message += "/laboratuvarlar Bölüm laboratuvarları \n"
+    help_message += "/staj Staj süreçleri\n"
+    help_message += "/anabilim_dallari Anabilim dalları\n"
+    help_message += "/arastirma_gruplari_projeler Bölümdeki aktif araştırma grupları ve projeler\n"
+    help_message += "/yayinlar Akademik kadrosu tarafından yapılan yayınlar\n"
+    help_message += "/yurt Yurt olanakları\n"
+    help_message += "/mudek MÜDEK Akreditasyonunuz var mı ?\n"
+    help_message += "/mezun_yl Yurt dışında Yüksek Lisans olanakları neler ?\n"
+    help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n"
+    help_message += "/btubm_sosyal Sosyal medya hesaplarımız\n"
     update.message.reply_text(help_message)
 
 def hakkinda(update, context):
@@ -252,7 +251,7 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("yardim", yardim))
+    dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("hakkinda", hakkinda))
     dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
     dp.add_handler(CommandHandler("akademik_tanitim", akademik_tanitim))
