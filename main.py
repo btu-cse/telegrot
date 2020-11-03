@@ -5,6 +5,7 @@ import sys
 import requests
 import urllib.parse as urlparse
 
+from datetime import datetime
 from emoji import emojize
 from bs4 import BeautifulSoup
 from time import sleep
@@ -41,6 +42,9 @@ else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
+#GLOBAL VARİABLES
+announcement_thread_dictionary = {}
+
 class myThread(Thread):
     def __init__(self, update, context, *args, **kwarg):
         super().__init__(*args, **kwarg)
@@ -75,7 +79,7 @@ class myThread(Thread):
     def run(self):
         while not self.running_event.isSet():
             try:
-                last = self.getAnnouncement(5, True).get('href')
+                last = self.getAnnouncement(1, True).get('href')
                 context = self.context
                 update = self.update
                 while not self.running_event.isSet():
@@ -95,6 +99,7 @@ class myThread(Thread):
                         message_text += self.getAnnouncement(value, False).get_text()
                         message_text += '\n ' + megaphone + megaphone + megaphone + megaphone + megaphone + ' DUYURU - SON \n'
                         context.bot.send_message(chat_id=update.message.chat_id, text=message_text)
+
                     list.clear()
                     last = self.getAnnouncement(0, True).get('href')
                     sleep(600)
@@ -149,6 +154,9 @@ def help(update, context):
     help_message += "/mezun_yl Yurt dışında Yüksek Lisans olanakları neler ?\n"
     help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n"
     help_message += "/btubm_sosyal Sosyal medya hesaplarımız\n"
+    help_message += "/rstart Duyuru botunu çalıştırır::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/rstop Duyuru botunu durdurur::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/rdict Çalışan betikleri gösterir::YALNIZCA SAHİP ve YÖNETİCİ\n"
     update.message.reply_text(help_message)
 
 def hakkinda(update, context):
@@ -261,24 +269,40 @@ def btubm_sosyal(update, context):
 
 def replica_start(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread
+    global announcement_thread_dictionary
+
     if user.status == "creator" or user.status == "administrator":
-        print("########## Yeni işlem başlatıldı")
-        update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        announcement_thread = myThread(update, context)
-        announcement_thread.start()
+        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
+            update.message.reply_text("Şu an da bir betik çalışıyor yeni bir betik başlatmak için deneyin: \n /rstop ve ardından /rstart.")
+        else:
+            announcement_thread_dictionary[str(update.message.chat_id)] = myThread(update, context)
+            announcement_thread_dictionary[str(update.message.chat_id)].start()
+            print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nYeni bir betik başlatıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
+            update.message.reply_text("Komut başarıyla çalıştırıldı.")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 # Creating a handler-function for /start command
 def replica_stop(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread
+    global announcement_thread_dictionary
     if user.status == "creator" or user.status == "administrator":
-        print("########## Bir işlem sonlandırıldı")
+        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
+            announcement_thread_dictionary[str(update.message.chat_id)].stop_thread()
+            announcement_thread_dictionary.pop(str(update.message.chat_id), None)
+            print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nBir bir betik sonlandırıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
+            update.message.reply_text("Komut başarıyla çalıştırıldı.")
+        else:
+            update.message.reply_text("Şu anda çalışan bir betik bulunamadı. Yeni betik oluşturmak için deneyin: /rstart")
+    else:
+        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
+
+def replica_dictionary(update, context):
+    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+    global announcement_thread_dictionary
+    if user.status == "creator" or user.status == "administrator":
+        print("#### BETİKLER BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(announcement_thread_dictionary) + " \n#### BETİKLER SON: ")
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        if announcement_thread != None:
-            announcement_thread.stop_thread()
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
@@ -346,6 +370,7 @@ def main():
     dp.add_handler(CommandHandler("btubm_sosyal", btubm_sosyal))
     dp.add_handler(CommandHandler("rstart", replica_start))
     dp.add_handler(CommandHandler("rstop", replica_stop))
+    dp.add_handler(CommandHandler("rdict", replica_dictionary))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_yes'))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 
