@@ -1,15 +1,6 @@
 import logging
 import os
-import random
 import sys
-import requests
-import urllib.parse as urlparse
-
-from datetime import datetime
-from emoji import emojize
-from bs4 import BeautifulSoup
-from time import sleep
-from threading import Thread, Event
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
@@ -17,8 +8,6 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 #%% variables
 TOKEN = os.getenv("TOKEN_REPLICA")
 url = "https://api.telegram.org/bot" + TOKEN
-
-#%% initialization
 
 #Enabling logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -41,73 +30,6 @@ elif mode == "prod":
 else:
     logger.error("No MODE specified!")
     sys.exit(1)
-
-#GLOBAL VARİABLES
-announcement_thread_dictionary = {}
-
-class myThread(Thread):
-    def __init__(self, update, context, *args, **kwarg):
-        super().__init__(*args, **kwarg)
-        self.running_event = Event()
-        self.update = update;
-        self.context = context;
-
-    def getAnnouncement(self, announcement, control):
-        params = {'page':'duyuru'}
-        if not control :
-            params = {'page':'duyuru','id':announcement}
-        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
-
-        page = requests.get(SITEURL, params=params)
-        soup = BeautifulSoup(page.content, 'html.parser')
-        container = soup.find_all("div", {"class" : "container"})[2]
-        row = container.find_all("div", {"class" : "row"})[0]
-        column = row.find_all("div", {"class" : "col-md-9"})[0]
-
-        if control:
-            i = 0
-            table = ''
-            for val in column.find_all('table'):
-                if i == announcement:
-                    return val.find_all('a')[0]
-                i += 1
-        else:
-            panel = column.find_all("div", {"class":"panel"})[0]
-            panel_body = panel.find_all('div')[1]
-            return panel_body
-
-    def run(self):
-        while not self.running_event.isSet():
-            try:
-                last = self.getAnnouncement(1, True).get('href')
-                context = self.context
-                update = self.update
-                while not self.running_event.isSet():
-                    newLast = self.getAnnouncement(0, True).get('href')
-                    i = 0
-                    list = []
-                    while last != newLast:
-                        id_query = newLast.split('&')[1].split('=')[1]
-                        list.append(id_query)
-                        i += 1
-                        newLast = self.getAnnouncement(i, True).get('href')
-                    list.reverse()
-
-                    for value in list:
-                        megaphone = emojize(":mega:", use_aliases=True)
-                        message_text = '\n ' + megaphone + megaphone + megaphone + megaphone + megaphone + ' DUYURU - BAŞLANGIÇ \n'
-                        message_text += self.getAnnouncement(value, False).get_text()
-                        message_text += '\n ' + megaphone + megaphone + megaphone + megaphone + megaphone + ' DUYURU - SON \n'
-                        context.bot.send_message(chat_id=update.message.chat_id, text=message_text)
-
-                    list.clear()
-                    last = self.getAnnouncement(0, True).get('href')
-                    sleep(600)
-            except:
-                print("Siteye şu anda ulaşılamıyor...")
-
-    def stop_thread(self):
-        self.running_event.set()
 
 #%% Creating handler-functions for /* commands
 def start(update, context):
@@ -154,9 +76,6 @@ def help(update, context):
     help_message += "/mezun_yl Yurt dışında Yüksek Lisans olanakları neler ?\n"
     help_message += "/prog_dilleri Bölümünüzdeki derslerde hangi programlama dilleri verilmektedir ?\n"
     help_message += "/btubm_sosyal Sosyal medya hesaplarımız\n"
-    help_message += "/rstart Duyuru botunu çalıştırır::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/rstop Duyuru botunu durdurur::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/rdict Çalışan betikleri gösterir::YALNIZCA SAHİP ve YÖNETİCİ\n"
     update.message.reply_text(help_message)
 
 def hakkinda(update, context):
@@ -267,45 +186,6 @@ def btubm_sosyal(update, context):
     update.message.reply_text("Instagram hesabımıza @btu.bm adı üzerinden erişebilirsiniz. Hesap, bölümümüz öğrencileri tarafından yönetilmektedir."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
-def replica_start(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
-
-    if user.status == "creator" or user.status == "administrator":
-        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
-            update.message.reply_text("Şu an da bir betik çalışıyor yeni bir betik başlatmak için deneyin: \n /rstop ve ardından /rstart.")
-        else:
-            announcement_thread_dictionary[str(update.message.chat_id)] = myThread(update, context)
-            announcement_thread_dictionary[str(update.message.chat_id)].start()
-            print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nYeni bir betik başlatıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
-            update.message.reply_text("Komut başarıyla çalıştırıldı.")
-    else:
-        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
-
-# Creating a handler-function for /start command
-def replica_stop(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
-    if user.status == "creator" or user.status == "administrator":
-        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
-            announcement_thread_dictionary[str(update.message.chat_id)].stop_thread()
-            announcement_thread_dictionary.pop(str(update.message.chat_id), None)
-            print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nBir bir betik sonlandırıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
-            update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        else:
-            update.message.reply_text("Şu anda çalışan bir betik bulunamadı. Yeni betik oluşturmak için deneyin: /rstart")
-    else:
-        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
-
-def replica_dictionary(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
-    if user.status == "creator" or user.status == "administrator":
-        print("#### BETİKLER BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(announcement_thread_dictionary) + " \n#### BETİKLER SON: ")
-        update.message.reply_text("Komut başarıyla çalıştırıldı.")
-    else:
-        update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
-
 def new_question_callback(update, context):
   query = update.callback_query
 
@@ -368,9 +248,6 @@ def main():
     dp.add_handler(CommandHandler("mezun_yl", mezun_yl))
     dp.add_handler(CommandHandler("prog_dilleri", prog_dilleri))
     dp.add_handler(CommandHandler("btubm_sosyal", btubm_sosyal))
-    dp.add_handler(CommandHandler("rstart", replica_start))
-    dp.add_handler(CommandHandler("rstop", replica_stop))
-    dp.add_handler(CommandHandler("rdict", replica_dictionary))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_yes'))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 
