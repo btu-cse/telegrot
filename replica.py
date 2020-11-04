@@ -42,7 +42,7 @@ else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
-#GLOBAL VARİABLES
+#GLOBAL VARIABLES
 announcement_thread_dictionary = {}
 
 class myThread(Thread):
@@ -52,7 +52,7 @@ class myThread(Thread):
         self.update = update;
         self.context = context;
 
-    def getAnnouncement(self, announcement, control):
+    def getAnnouncement(self, announcement, control = True):
         params = {'page':'duyuru'}
         if not control :
             params = {'page':'duyuru','id':announcement}
@@ -73,35 +73,36 @@ class myThread(Thread):
                 i += 1
         else:
             panel = column.find_all("div", {"class":"panel"})[0]
-            panel_body = panel.find_all('div')[1]
-            return panel_body
+            panel_body = panel.find_all('div')[1].get_text()
+            panel_body += '\nİncelemek için: ' + str(SITEURL) + '?'
+            for val in params.keys():
+                panel_body += str(val) + '=' + str(params[val]) + '&'
+            return panel_body.rstrip('&')
 
     def run(self):
         while not self.running_event.isSet():
             try:
-                last = self.getAnnouncement(0, True).get('href')
+                last = self.getAnnouncement(0).get('href')
                 context = self.context
                 update = self.update
                 while not self.running_event.isSet():
-                    newLast = self.getAnnouncement(0, True).get('href')
+                    newLast = self.getAnnouncement(0).get('href')
                     i = 0
                     list = []
                     while last != newLast:
                         id_query = newLast.split('&')[1].split('=')[1]
                         list.append(id_query)
                         i += 1
-                        newLast = self.getAnnouncement(i, True).get('href')
+                        newLast = self.getAnnouncement(i).get('href')
                     list.reverse()
 
                     for value in list:
-                        megaphone = emojize(":mega:", use_aliases=True)
-                        message_text = '\n ' + megaphone + megaphone + megaphone + megaphone + megaphone + ' DUYURU - BAŞLANGIÇ \n'
-                        message_text += self.getAnnouncement(value, False).get_text()
-                        message_text += '\n ' + megaphone + megaphone + megaphone + megaphone + megaphone + ' DUYURU - SON \n'
+                        message_text = '\nDUYURU: \n'
+                        message_text += self.getAnnouncement(value, False)
                         context.bot.send_message(chat_id=update.message.chat_id, text=message_text)
 
                     list.clear()
-                    last = self.getAnnouncement(0, True).get('href')
+                    last = self.getAnnouncement(0).get('href')
                     sleep(600)
             except:
                 print("Siteye şu anda ulaşılamıyor...")
