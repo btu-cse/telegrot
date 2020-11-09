@@ -12,12 +12,11 @@ from time import sleep
 from threading import Thread, Event
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 
 #%% variables
 TOKEN = os.getenv("REPLICA_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
-
 #%% initialization
 
 #Enabling logging
@@ -32,8 +31,8 @@ if mode == "dev":
         updater.start_polling()
 elif mode == "prod":
     def run(updater):
-        PORT = int(os.environ.get("PORT", "8443"))
-        HEROKU_APP_NAME = "btubmtanitimbot"
+        PORT = int(os.environ.get("PORT", 8443))
+        HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME", 8443)
         updater.start_webhook(listen="0.0.0.0",
                               port=PORT,
                               url_path=TOKEN)
@@ -43,13 +42,12 @@ else:
     sys.exit(1)
 
 #GLOBAL VARIABLES
-announcement_thread_dictionary = {}
+chat_id_dictionary = { '-466883632': True, '-408651112':True }
 
 class myThread(Thread):
-    def __init__(self, update, context, *args, **kwarg):
+    def __init__(self, context, *args, **kwarg):
         super().__init__(*args, **kwarg)
         self.running_event = Event()
-        self.update = update;
         self.context = context;
 
     def getAnnouncement(self, announcement, control = True):
@@ -80,11 +78,11 @@ class myThread(Thread):
             return panel_body.rstrip('&')
 
     def run(self):
+        global chat_id_dictionary
         while not self.running_event.isSet():
             try:
-                last = self.getAnnouncement(0).get('href')
+                last = self.getAnnouncement(1).get('href')
                 context = self.context
-                update = self.update
                 while not self.running_event.isSet():
                     newLast = self.getAnnouncement(0).get('href')
                     i = 0
@@ -99,11 +97,12 @@ class myThread(Thread):
                     for value in list:
                         message_text = '\nDUYURU: \n'
                         message_text += self.getAnnouncement(value, False)
-                        context.bot.send_message(chat_id=update.message.chat_id, text=message_text)
+                        for key in chat_id_dictionary:
+                            context.bot.send_message(chat_id=key, text=message_text)
 
                     list.clear()
                     last = self.getAnnouncement(0).get('href')
-                    sleep(600)
+                    sleep(1800)# 30 minutes
             except:
                 print("Siteye şu anda ulaşılamıyor...")
 
@@ -116,58 +115,56 @@ def help(update, context):
 
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n"
-    help_message += "Mevcut komutlar; \n"
-    help_message += "/dict Çalışan betikleri konsola yansıtır::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/hakkinda - Geliştirici ekibi\n"
+    help_message += "Mevcut komutlar; \n\n"
+    help_message += "/yaz Sözlükte bulunan grupları konsola yazar::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/hakkinda - Geliştirici ekibi hakkında bilgi verir\n"
     help_message += "/help - Tüm komutları görmek istiyorum\n"
-    help_message += "/start Duyuru botunu çalıştırır::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/stop Duyuru botunu durdurur::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/ekle Grubu duyurucuya ekler::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/cikar Grubu duyurucudan çıkarır::YALNIZCA SAHİP ve YÖNETİCİ\n"
     help_message += "/web_sayfasi - BTÜ BM Web sayfası\n"
     update.message.reply_text(help_message)
 
-def hakkinda(update, context):
+def about(update, context):
     update.message.reply_text("Duyuru botumuz, bölüm öğrencimiz Fatih Ateş ve Arş. Gör. Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif"
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
-def web_sayfasi(update, context):
+def web_site(update, context):
     update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
-def replica_start(update, context):
+def add(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
+    global chat_id_dictionary
 
     if user.status == "creator" or user.status == "administrator":
-        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
-            update.message.reply_text("Şu an da bir betik çalışıyor yeni bir betik başlatmak için deneyin: \n /stop ve ardından /start.")
+        if chat_id_dictionary.get(str(update.message.chat_id)) != None:
+            update.message.reply_text("Şu an da bu grup duyurucuya kayıtlı yeniden başlatmak için deneyin: \n /cikar ve ardından /ekle.")
         else:
-            announcement_thread_dictionary[str(update.message.chat_id)] = myThread(update, context)
-            announcement_thread_dictionary[str(update.message.chat_id)].start()
-            print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nYeni bir betik başlatıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
-            update.message.reply_text("Duyuru botu aktif hale getirildi.")
+            chat_id_dictionary[str(update.message.chat_id)] = True
+            print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nDuyurucuya yeni bir grup eklendi - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
+            update.message.reply_text("Komut başarıyla çalıştırıldı.")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 # Creating a handler-function for /start command
-def replica_stop(update, context):
+def remove(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
+    global chat_id_dictionary
     if user.status == "creator" or user.status == "administrator":
-        if announcement_thread_dictionary.get(str(update.message.chat_id)) != None:
-            announcement_thread_dictionary[str(update.message.chat_id)].stop_thread()
-            announcement_thread_dictionary.pop(str(update.message.chat_id), None)
-            print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nBir bir betik sonlandırıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
+        if chat_id_dictionary.get(str(update.message.chat_id)) != None:
+            chat_id_dictionary.pop(str(update.message.chat_id), None)
+            print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nDuyurucudan bir grup çıkarıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
         else:
-            update.message.reply_text("Şu anda çalışan bir betik bulunamadı. Yeni betik oluşturmak için deneyin: /start")
+            update.message.reply_text("Şu anda bu grup duyurucuda bulunmuyor. Grubu duyurucuya dahil etmek için: /add")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
-def replica_dictionary(update, context):
+def dictionary(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global announcement_thread_dictionary
+    global chat_id_dictionary
     if user.status == "creator" or user.status == "administrator":
-        print("#### BETİKLER BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(announcement_thread_dictionary) + " \n#### BETİKLER SON")
+        print("#### GRUPLAR BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(chat_id_dictionary) + " \n#### GRUPLAR SON")
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
@@ -203,13 +200,17 @@ def main():
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
+    # Create and start thread
+    announcement_thread = myThread(CallbackContext(dp))
+    announcement_thread.start()
+
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("dict", replica_dictionary))
-    dp.add_handler(CommandHandler("hakkinda", hakkinda))
+    dp.add_handler(CommandHandler("yaz", dictionary))
+    dp.add_handler(CommandHandler("hakkinda", about))
     dp.add_handler(CommandHandler("help", help))
-    dp.add_handler(CommandHandler("start", replica_start))
-    dp.add_handler(CommandHandler("stop", replica_stop))
-    dp.add_handler(CommandHandler("web_sayfasi", web_sayfasi))
+    dp.add_handler(CommandHandler("ekle", add))
+    dp.add_handler(CommandHandler("cikar", remove))
+    dp.add_handler(CommandHandler("web_sayfasi", web_site))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_yes'))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 

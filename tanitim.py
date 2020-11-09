@@ -6,7 +6,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 
 #%% variables
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("TANITIM_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
 
 #Enabling logging
