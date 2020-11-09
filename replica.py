@@ -42,7 +42,7 @@ else:
     sys.exit(1)
 
 #GLOBAL VARIABLES
-chat_id_dictionary = { '-466883632': True, '-408651112':True }
+chat_id_dictionary = { '-1001285487723': True, '-466883632':True } # DESTEK: , TEST: '-466883632'
 
 class myThread(Thread):
     def __init__(self, context, *args, **kwarg):
@@ -81,7 +81,7 @@ class myThread(Thread):
         global chat_id_dictionary
         while not self.running_event.isSet():
             try:
-                last = self.getAnnouncement(1).get('href')
+                last = self.getAnnouncement(0).get('href')
                 context = self.context
                 while not self.running_event.isSet():
                     newLast = self.getAnnouncement(0).get('href')
@@ -116,11 +116,11 @@ def help(update, context):
     help_message = "Mevcut komutları aşağıdaki listeden görebilirsin. \n"
     help_message += "Komut çalıştırmak için \"/\" karakteri ile gerekli komutu yazmalısın.\n"
     help_message += "Mevcut komutlar; \n\n"
-    help_message += "/yaz Sözlükte bulunan grupları konsola yazar::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/yaz - Sözlükte bulunan grupları konsola yazar::YALNIZCA SAHİP ve YÖNETİCİ\n"
     help_message += "/hakkinda - Geliştirici ekibi hakkında bilgi verir\n"
-    help_message += "/help - Tüm komutları görmek istiyorum\n"
-    help_message += "/ekle Grubu duyurucuya ekler::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/cikar Grubu duyurucudan çıkarır::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/yardim - Tüm komutları görmek istiyorum\n"
+    help_message += "/ekle - Grubu duyurucuya ekler::YALNIZCA SAHİP ve YÖNETİCİ\n"
+    help_message += "/cikar - Grubu duyurucudan çıkarır::YALNIZCA SAHİP ve YÖNETİCİ\n"
     help_message += "/web_sayfasi - BTÜ BM Web sayfası\n"
     update.message.reply_text(help_message)
 
@@ -207,7 +207,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("yaz", dictionary))
     dp.add_handler(CommandHandler("hakkinda", about))
-    dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler("yardim", help))
     dp.add_handler(CommandHandler("ekle", add))
     dp.add_handler(CommandHandler("cikar", remove))
     dp.add_handler(CommandHandler("web_sayfasi", web_site))
