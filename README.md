@@ -58,8 +58,8 @@ veri kaybetmenize neden olur. Programınızı bu bağlamda yazmanız gerekmekted
 
 &emsp;&emsp;Eklentiyi kurduktan sonra iki adet yapılandırma değişkeni eklememiz gerekiyor. Uygulamanızın ayarlar bölümüne gelin ve Ayar Değişkenleri bölümünde
 Yapılandırma Değişkenlerini Göster butonuna tıklayın. Ardından aşağıdaki anahtar ve değerleri ekleyin.
-> KEY: HEROKU_APP_NAME | VALUE=[SİZİN_UYGULAMA_ADINIZ]
-> KEY: HEROKU_AUTH_TOKEN | VALUE=[SİZİN_AUTH_TOKEN_DEĞERİNİZ]
+> KEY: HEROKU_APP_NAME      VALUE=[SİZİN_UYGULAMA_ADINIZ]  
+> KEY: HEROKU_AUTH_TOKEN    VALUE=[SİZİN_AUTH_TOKEN_DEĞERİNİZ]
 
 AUTH TOKEN DEĞERİNİZİ aşağıdaki linkte verilen yolları izleyerek elde edebilirsiniz. Auth token değeriniz machine api.heroku.com altındaki "password" değeridir.
 
