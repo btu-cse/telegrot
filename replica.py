@@ -216,7 +216,8 @@ def main():
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 
     # Start the Bot
-    run(updater)
-
+    updater.start_polling()
+    updater.idle()
+    
 if __name__ == '__main__':
     main()
