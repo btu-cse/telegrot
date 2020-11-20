@@ -1,2 +1,2 @@
 worker: python3 tanitim.py
-web: python3 replica.py
+replica: python3 replica.py
