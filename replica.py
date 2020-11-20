@@ -32,17 +32,18 @@ if mode == "dev":
 elif mode == "prod":
     def run(updater):
         PORT = int(os.environ.get("PORT", 8443))
-        HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME", 8443)
+        HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
         updater.start_webhook(listen="0.0.0.0",
                               port=PORT,
                               url_path=TOKEN)
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
+        updater.idle()
 else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
 #GLOBAL VARIABLES
-chat_id_dictionary = { '-1001285487723': True, '-466883632':True } # DESTEK: , TEST: '-466883632'
+chat_id_dictionary = { '-1001285487723': True, '-466883632':True } # DESTEK: 1001285487723, TEST: '-466883632'
 
 class myThread(Thread):
     def __init__(self, context, *args, **kwarg):
@@ -215,12 +216,7 @@ def main():
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 
     # Start the Bot
-    updater.start_polling()
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+    run(updater)
 
 if __name__ == '__main__':
     main()
