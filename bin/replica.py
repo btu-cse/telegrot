@@ -3,6 +3,7 @@ import os
 import random
 import sys
 import requests
+import json
 import urllib.parse as urlparse
 
 from datetime import datetime
@@ -14,18 +15,18 @@ from threading import Thread, Event
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 
-#%% variables
+# Heroku'dan REPLICA_TOKEN değişkenini getirir
 TOKEN = os.getenv("REPLICA_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
-#%% initialization
 
-#Enabling logging
+# Loglama başlatılıyor
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
-# Getting mode, so we could define run function for local and Heroku setup
+# Heroku'dan MODE değişkenini çekiyor
 mode = os.getenv("MODE")
 
+# Mod'a uyarlı, updater başlatma fonksiyonu belirler
 if mode == "dev":
     def run(updater):
         updater.start_polling()
@@ -42,75 +43,104 @@ else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
-#GLOBAL VARIABLES
-chat_id_dictionary = { '-1001285487723': True, '-466883632':True } # DESTEK: 1001285487723, TEST: '-466883632'
+# Global değişkenler
+DOC_JSON = "./doc/data.json"
+announcement_json_data = { "lastAnnouncement": "0", "chatIDs": set([]) } # DESTEK: 1001285487723, TEST: '-466883632'
 
-class myThread(Thread):
-    def __init__(self, context, *args, **kwarg):
-        super().__init__(*args, **kwarg)
-        self.running_event = Event()
-        self.context = context;
 
-    def getAnnouncement(self, announcement, control = True):
-        params = {'page':'duyuru'}
-        if not control :
-            params = {'page':'duyuru','id':announcement}
-        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
+# ../doc/data.json dosyasından son gönderilen duyuruyu ve aktif olduğu chatleri getirir
+def getData():
+    global announcement_json_data
+    f = open(DOC_JSON, "r")
+    data = json.loads(f.read())
 
-        page = requests.get(SITEURL, params=params)
-        soup = BeautifulSoup(page.content, 'html.parser')
-        container = soup.find_all("div", {"class" : "container"})[2]
-        row = container.find_all("div", {"class" : "row"})[0]
-        column = row.find_all("div", {"class" : "col-md-9"})[0]
+    announcement_json_data["chatIDs"] = set(data['chatIDs'])
+    announcement_json_data["lastAnnouncement"] = data["lastAnnouncement"]
 
-        if control:
-            i = 0
-            table = ''
-            for val in column.find_all('table'):
-                if i == announcement:
-                    return val.find_all('a')[0]
-                i += 1
+def updateData():
+    global announcement_json_data
+    data = announcement_json_data.copy()
+    data['chatIDs'] = list(data['chatIDs'])
+
+    json_object = json.dumps(data, indent = 4)
+    with open(DOC_JSON, "w") as outfile:
+        outfile.write(json_object)
+
+    return json_object
+
+# Duyuru ile ilgili veri döndürür
+def getAnnouncement(announcement, control = True):
+    params = {'page':'duyuru'}
+    if not control :
+        params = {'page':'duyuru','id':announcement}
+    SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
+
+    # Siteden gelen dönütü düzenler
+    page = requests.get(SITEURL, params=params)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    container = soup.find_all("div", {"class" : "container"})[2]
+    row = container.find_all("div", {"class" : "row"})[0]
+    column = row.find_all("div", {"class" : "col-md-9"})[0]
+
+    # Eğer control=True ise duyurunun query verisinden id'yi döndürür. Eğer control=False ise duyuruyu döndürür
+    if control:
+        i = 0
+        table = ''
+        for val in column.find_all('table'):
+            if i == announcement:
+                return val.find_all('a')[0]
+            i += 1
+    else:
+        panel = column.find_all("div", {"class":"panel"})[0]
+        panel_body = panel.find_all('div')[1].get_text()
+        panel_body += '\nİncelemek için: ' + str(SITEURL) + '?'
+        for val in params.keys():
+            panel_body += str(val) + '=' + str(params[val]) + '&'
+        return panel_body.rstrip('&')
+
+# Belirlenen(chat_id_set) yerlere duyuruyu gönderir.
+def sendAnnouncement(ctx):
+    global announcement_json_data
+    try:
+        lastAnnouncement = getAnnouncement(0).get('href')
+        isEmptyLastAnnouncement = announcement_json_data["lastAnnouncement"].split('&')[1].split('=')[1]
+        print(isEmptyLastAnnouncement)
+        if isEmptyLastAnnouncement != "0" and isEmptyLastAnnouncement != "":
+            last = announcement_json_data["lastAnnouncement"]
         else:
-            panel = column.find_all("div", {"class":"panel"})[0]
-            panel_body = panel.find_all('div')[1].get_text()
-            panel_body += '\nİncelemek için: ' + str(SITEURL) + '?'
-            for val in params.keys():
-                panel_body += str(val) + '=' + str(params[val]) + '&'
-            return panel_body.rstrip('&')
+            last = lastAnnouncement
+        context = ctx
+        newLast = lastAnnouncement
+        i = 0
+        list = []
+        while last != newLast:
+            id_query = newLast.split('&')[1].split('=')[1]
+            list.append(id_query)
+            i += 1
+            newLast = getAnnouncement(i).get('href')
+        list.reverse()
 
-    def run(self):
-        global chat_id_dictionary
-        while not self.running_event.isSet():
-            try:
-                last = self.getAnnouncement(0).get('href')
-                context = self.context
-                while not self.running_event.isSet():
-                    newLast = self.getAnnouncement(0).get('href')
-                    i = 0
-                    list = []
-                    while last != newLast:
-                        id_query = newLast.split('&')[1].split('=')[1]
-                        list.append(id_query)
-                        i += 1
-                        newLast = self.getAnnouncement(i).get('href')
-                    list.reverse()
+        for value in list:
+            message_text = '\nDUYURU: \n'
+            message_text += getAnnouncement(value, False)
+            for key in announcement_json_data["chatIDs"]:
+                try:
+                    context.bot.send_message(chat_id=key, text=message_text)
+                except:
+                    print('{0} Chat id\'sine sahip sohbete duyuru gönderilemedi.'.format(key))
 
-                    for value in list:
-                        message_text = '\nDUYURU: \n'
-                        message_text += self.getAnnouncement(value, False)
-                        for key in chat_id_dictionary:
-                            context.bot.send_message(chat_id=key, text=message_text)
+        announcement_json_data["lastAnnouncement"] = lastAnnouncement
 
-                    list.clear()
-                    last = self.getAnnouncement(0).get('href')
-                    sleep(1800)# 30 minutes
-            except:
-                print("Siteye şu anda ulaşılamıyor...")
+    except:
+        print("Siteye şu anda ulaşılamıyor...")
 
-    def stop_thread(self):
-        self.running_event.set()
+# Betik çalıştırıldığında bir kere çalışır ve yeni duyuru varsa gruplara iletir.
+def start(ctx):
+    getData()
+    sendAnnouncement(ctx)
+    updateData()
 
-#%% Creating handler-functions for /* commands
+# /help komutu geldiğinde gerçekleştirilecek işlemler
 def help(update, context):
     """Send a message when the command /help is issued."""
 
@@ -125,35 +155,41 @@ def help(update, context):
     help_message += "/web_sayfasi - BTÜ BM Web sayfası\n"
     update.message.reply_text(help_message)
 
+# /hakkinda komutu geldiğinde gerçekleştirilecek işlemler
 def about(update, context):
     update.message.reply_text("Duyuru botumuz, bölüm öğrencimiz Fatih Ateş ve Arş. Gör. Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif"
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
-def web_site(update, context):
+# /web komutu geldiğinde gerçekleştirilecek işlemler
+def web(update, context):
     update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
+# /ekle komutu geldiğinde gerçekleştirilecek işlemler
 def add(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global chat_id_dictionary
+    global announcement_json_data
+    chat_id_set = announcement_json_data["chatIDs"]
 
     if user.status == "creator" or user.status == "administrator":
-        if chat_id_dictionary.get(str(update.message.chat_id)) != None:
+        if chat_id_set.get(str(update.message.chat_id)) != None:
             update.message.reply_text("Şu an da bu grup duyurucuya kayıtlı yeniden başlatmak için deneyin: \n /cikar ve ardından /ekle.")
         else:
-            chat_id_dictionary[str(update.message.chat_id)] = True
+            chat_id_set[str(update.message.chat_id)] = True
             print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nDuyurucuya yeni bir grup eklendi - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
-# Creating a handler-function for /start command
+# /cikar komutu geldiğinde gerçekleştirilecek işlemler
 def remove(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global chat_id_dictionary
+    global announcement_json_data
+    chat_id_set = announcement_json_data["chatIDs"]
+
     if user.status == "creator" or user.status == "administrator":
-        if chat_id_dictionary.get(str(update.message.chat_id)) != None:
-            chat_id_dictionary.pop(str(update.message.chat_id), None)
+        if chat_id_set.get(str(update.message.chat_id)) != None:
+            chat_id_set.pop(str(update.message.chat_id), None)
             print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nDuyurucudan bir grup çıkarıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
         else:
@@ -161,15 +197,18 @@ def remove(update, context):
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
+# /yaz komutu geldiğinde gerçekleştirilecek işlemler
 def dictionary(update, context):
     user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
-    global chat_id_dictionary
+    json_data = updateData()
+
     if user.status == "creator" or user.status == "administrator":
-        print("#### GRUPLAR BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(chat_id_dictionary) + " \n#### GRUPLAR SON")
+        print("#### GRUPLAR BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(json_data) + " \n#### GRUPLAR SON")
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
+# Gönderilen komut işlemleri gerçekleştirildiğinde, döndürülen 'Başka bir sorunuz var mı ?' fonksiyonu
 def new_question_callback(update, context):
   query = update.callback_query
 
@@ -180,7 +219,7 @@ def new_question_callback(update, context):
   else:
       query.message.reply_text("Bir sorun var! Error Code:208.")
 
-############################ Keyboards #########################################
+############################ Klavyeler #########################################
 def new_question_keyboard():
   keyboard = [[
       InlineKeyboardButton('Evet', callback_data='new_question_yes'),
@@ -188,36 +227,31 @@ def new_question_keyboard():
   ]]
   return InlineKeyboardMarkup(keyboard)
 
-############################# Messages #########################################
+############################# Mesajlar #########################################
 def new_question_message():
   return '\n\nBaşka bir sorunuz var mı ?'
 
 def main():
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # Post version 12 this will no longer be necessary
+    # Updater oluşturur
     updater = Updater(TOKEN, use_context=True)
 
-    # Get the dispatcher to register handlers
+    # Dispatcher'ı erişilebilir bir değişkene atar
     dp = updater.dispatcher
 
-    # Create and start thread
-    announcement_thread = myThread(CallbackContext(dp))
-    announcement_thread.start()
+    start(CallbackContext(dp))
 
-    # on different commands - answer in Telegram
+    # Telegramdan gönderilen komutlar için algılayıcılar oluşturuluyor
     dp.add_handler(CommandHandler("yaz", dictionary))
     dp.add_handler(CommandHandler("hakkinda", about))
     dp.add_handler(CommandHandler("yardim", help))
     dp.add_handler(CommandHandler("ekle", add))
     dp.add_handler(CommandHandler("cikar", remove))
-    dp.add_handler(CommandHandler("web_sayfasi", web_site))
+    dp.add_handler(CommandHandler("web", web))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_yes'))
     dp.add_handler(CallbackQueryHandler(new_question_callback, pattern='new_question_no'))
 
-    # Start the Bot
-    updater.start_polling()
-    updater.idle()
-    
+    # Bot başlatılıyor.
+    run(updater)
+
 if __name__ == '__main__':
     main()
