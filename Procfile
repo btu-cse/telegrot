@@ -1,1 +1,1 @@
-web: python3 bin/replica.py
+web: python3 lib/replica.py
