@@ -7,6 +7,7 @@ import sys
 import requests
 import json
 import urllib.parse as urlparse
+import mysql.connector
 
 from datetime import datetime
 from emoji import emojize
@@ -21,11 +22,14 @@ from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, Callback
 TOKEN = os.getenv("REPLICA_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
 
+# Heroku'dan USER_ID değişkenini getirir
+USER_ID = eval(os.getenv("USER_ID"))
+
 # Loglama başlatılıyor
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger()
 
-# Heroku'dan MODE değişkenini çekiyor
+# Heroku'dan MODE değişkenini çeker
 mode = os.getenv("MODE")
 
 # Mod'a uyarlı, updater başlatma fonksiyonu belirler
@@ -47,78 +51,101 @@ else:
     logger.error("No MODE specified!")
     sys.exit(1)
 
-# Global değişkenler
-DOC_JSON = "./doc/data.json"
-announcement_json_data = { "lastAnnouncement": "0", "chatIDs": {'-3': 'Bilg. Müh. Destek', '-466883632': 'TEST GRUP'} } # DESTEK: 1001285487723, TEST: '-466883632'
+# GLOBAL DEĞİŞKENLER
 
+# DESTEK: 1001285487723, TEST: '-466883632'
+initialState = {
+    "lastAnnouncement": "0",
+    "chatIDs": {
+        '-3': 'Bilg. Müh. Destek',
+        '-466883632': 'TEST GRUP'
+    }
+}
+STATE = initialState
 
-# ../doc/data.json dosyasından son gönderilen duyuruyu ve aktif olduğu chatleri getirir
+mydb = mysql.connector.connect(
+  host=os.getenv("REMOTE_SQL_SERVER"),
+  port="3306",
+  user=os.getenv("REMOTE_SQL_USER"),
+  password=os.getenv("REMOTE_SQL_PWD"),
+  database=os.getenv("REMOTE_SQL_USER"),
+  charset='utf8',
+)
+
+# Uzak sunucudan son gönderilen duyuruyu ve aktif olduğu chatleri getirir
 def getData():
-    global announcement_json_data
+    global STATE
     try:
-        f = open(DOC_JSON, "r")
-        data = json.loads(f.read())
 
-        announcement_json_data["chatIDs"] = data['chatIDs']
-        announcement_json_data["lastAnnouncement"] = data["lastAnnouncement"]
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT lastAnnouncement, chatIDs FROM data WHERE id=1 ")
+        result = mycursor.fetchall()
+        STATE["chatIDs"] = eval(result[0][1])
+        STATE["lastAnnouncement"] = result[0][0]
+
     except Exception as e:
-        print("'data.json' üzerinden veri çekilemedi. \n " + e)
+        if STATE['lastAnnouncement'] == "0":
+            STATE['lastAnnouncement'] = getAnnouncement(0).get('href').split('&')[1].split('=')[1]
+        print("Uzak sunucudan veri getirilemedi. \n " + e)
 
+# Uzak sunucuda bulunan son gönderilen duyuru kolonu ve aktif chatlerin bulunduğu kolonu günceller
 def updateData():
-    global announcement_json_data
     try:
-        data = announcement_json_data.copy()
+        data = STATE.copy()
         data['chatIDs'] = data['chatIDs']
+        mycursor = mydb.cursor()
 
-        json_object = json.dumps(data, indent = 4, ensure_ascii = False)
-        with open(DOC_JSON, "w", encoding='utf8') as outfile:
-            outfile.write(json_object)
-
+        query ="UPDATE data SET lastAnnouncement=\"{0}\", chatIDs=\"{1}\" WHERE id=1".format(data['lastAnnouncement'], str(data['chatIDs']))
+        mycursor.execute(query)
+        mydb.commit()
+        print(mycursor.rowcount, "satır(lar) güncellendi")
         getData()
-        return json_object
+
     except Exception as e:
-        print("'data.json' dosyası güncellenemedi. \n " + e)
+        print("Uzak sunucuya veri gönderilemiyor. \n " + e)
 
 
 # Duyuru ile ilgili veri döndürür
 def getAnnouncement(announcement, control = True):
-    params = {'page':'duyuru'}
-    if not control :
-        params = {'page':'duyuru','id':announcement}
-    SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
+    try:
+        params = {'page':'duyuru'}
+        if not control :
+            params = {'page':'duyuru','id':announcement}
+        SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
 
-    # Siteden gelen dönütü düzenler
-    page = requests.get(SITEURL, params=params)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    container = soup.find_all("div", {"class" : "container"})[2]
-    row = container.find_all("div", {"class" : "row"})[0]
-    column = row.find_all("div", {"class" : "col-md-9"})[0]
+        # Siteden gelen dönütü düzenler
+        page = requests.get(SITEURL, params=params)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        container = soup.find_all("div", {"class" : "container"})[2]
+        row = container.find_all("div", {"class" : "row"})[0]
+        column = row.find_all("div", {"class" : "col-md-9"})[0]
 
-    # Eğer control=True ise duyurunun query verisinden id'yi döndürür. Eğer control=False ise duyuruyu döndürür
-    if control:
-        i = 0
-        table = ''
-        for val in column.find_all('table'):
-            if i == announcement:
-                return val.find_all('a')[0]
-            i += 1
-    else:
-        panel = column.find_all("div", {"class":"panel"})[0]
-        panel_body = panel.find_all('div')[1].get_text()
-        panel_body += '\nİncelemek için: ' + str(SITEURL) + '?'
-        for val in params.keys():
-            panel_body += str(val) + '=' + str(params[val]) + '&'
-        return panel_body.rstrip('&')
+        # Eğer control=True ise duyurunun query verisinden id'yi döndürür. Eğer control=False ise duyuruyu döndürür
+        if control:
+            i = 0
+            table = ''
+            for val in column.find_all('table'):
+                if i == announcement:
+                    return val.find_all('a')[0]
+                i += 1
+        else:
+            panel = column.find_all("div", {"class":"panel"})[0]
+            panel_body = panel.find_all('div')[1].get_text()
+            panel_body += '\nİncelemek için: ' + str(SITEURL) + '?'
+            for val in params.keys():
+                panel_body += str(val) + '=' + str(params[val]) + '&'
+            return panel_body.rstrip('&')
+    except Exception as e:
+        print("Siteden duyuru getirilemedi, DUYURU NO: {0} \n {1}".format(announcement, e))
 
 # Belirlenen(chat_id_dictionary) yerlere duyuruyu gönderir.
 def sendAnnouncement(ctx):
-    global announcement_json_data
+    global STATE
     try:
-        lastAnnouncement = getAnnouncement(0).get('href')
-        isEmptyLastAnnouncement = announcement_json_data["lastAnnouncement"].split('&')[1].split('=')[1]
+        lastAnnouncement = getAnnouncement(0).get('href').split('&')[1].split('=')[1]
 
-        if isEmptyLastAnnouncement != "0" and isEmptyLastAnnouncement != "":
-            last = announcement_json_data["lastAnnouncement"]
+        if STATE["lastAnnouncement"] != "0" and STATE["lastAnnouncement"] != "":
+            last = STATE["lastAnnouncement"]
         else:
             last = lastAnnouncement
         context = ctx
@@ -126,22 +153,23 @@ def sendAnnouncement(ctx):
         i = 0
         list = []
         while last != newLast:
-            id_query = newLast.split('&')[1].split('=')[1]
-            list.append(id_query)
+            list.append(newLast)
             i += 1
-            newLast = getAnnouncement(i).get('href')
+            if i > 3:
+                list.clear()
+                break
+            newLast = getAnnouncement(i).get('href').split('&')[1].split('=')[1]
         list.reverse()
-
         for value in list:
             message_text = '\nDUYURU: \n'
             message_text += getAnnouncement(value, False)
-            for key in announcement_json_data["chatIDs"]:
+            for key in STATE["chatIDs"]:
                 try:
                     context.bot.send_message(chat_id=key, text=message_text)
                 except:
                     print('{0} Chat id\'sine sahip sohbete duyuru gönderilemedi.'.format(key))
 
-        announcement_json_data["lastAnnouncement"] = lastAnnouncement
+        STATE["lastAnnouncement"] = lastAnnouncement
 
     except Exception as e:
         print("Siteden veri getirilemedi... \n" + e)
@@ -180,8 +208,8 @@ def web(update, context):
 # /ekle komutu geldiğinde gerçekleştirilecek işlemler
 def add(update, context):
     user = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
-    global announcement_json_data
-    chat_id_dictionary = announcement_json_data["chatIDs"]
+    global STATE
+    chat_id_dictionary = STATE["chatIDs"]
 
     if user.status == "creator" or user.status == "administrator":
         if chat_id_dictionary.get(str(update.message.chat.id)) != None:
@@ -197,8 +225,8 @@ def add(update, context):
 # /cikar komutu geldiğinde gerçekleştirilecek işlemler
 def remove(update, context):
     user = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
-    global announcement_json_data
-    chat_id_dictionary = announcement_json_data["chatIDs"]
+    global STATE
+    chat_id_dictionary = STATE["chatIDs"]
 
     if user.status == "creator" or user.status == "administrator":
         if chat_id_dictionary.get(str(update.message.chat.id)) != None:
@@ -214,12 +242,15 @@ def remove(update, context):
 # /yaz komutu geldiğinde gerçekleştirilecek işlemler
 def getDictionary(update, context):
     member = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
-    json_data = updateData()
+    json_data = json.dumps(STATE, indent = 4, ensure_ascii = False)
+
     if member.status == "creator" or member.status == "administrator":
         message = "#### VERİ BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(json_data) + " \n#### VERİ SON"
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        if update.message.from_user['id'] == 690194302: # 690194302 = fatiiates hesabına ait user id
-            update.message.reply_text(message)
+        print(message)
+        for key in USER_ID.keys():
+            if update.message.from_user['id'] == USER_ID[key]:
+                update.message.reply_text(message)
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
@@ -252,8 +283,6 @@ def main():
 
     # Dispatcher'ı erişilebilir bir değişkene atar
     dp = updater.dispatcher
-
-
 
     # Telegramdan gönderilen komutlar için algılayıcılar oluşturuluyor
     dp.add_handler(CommandHandler("yaz", getDictionary))
