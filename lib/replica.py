@@ -18,7 +18,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 
 # Heroku'dan REPLICA_TOKEN değişkenini getirir
-TOKEN = os.getenv("REPLICA_TOKEN")
+TOKEN = "1403524326:AAG9QDOsVFCwB50Z-xnWtWuqoJf9AhXuLx0"#os.getenv("REPLICA_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
 
 # Loglama başlatılıyor
@@ -26,12 +26,13 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(level
 logger = logging.getLogger()
 
 # Heroku'dan MODE değişkenini çekiyor
-mode = os.getenv("MODE")
+mode = "dev"#os.getenv("MODE")
 
 # Mod'a uyarlı, updater başlatma fonksiyonu belirler
 if mode == "dev":
     def run(updater):
         updater.start_polling()
+        start(CallbackContext(updater.dispatcher))
 elif mode == "prod":
     def run(updater):
         PORT = int(os.environ.get("REPLICA_PORT", 8443))
@@ -40,6 +41,7 @@ elif mode == "prod":
                               port=PORT,
                               url_path=TOKEN)
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
+        start(CallbackContext(updater.dispatcher))
         updater.idle()
 else:
     logger.error("No MODE specified!")
@@ -251,7 +253,7 @@ def main():
     # Dispatcher'ı erişilebilir bir değişkene atar
     dp = updater.dispatcher
 
-    start(CallbackContext(dp))
+
 
     # Telegramdan gönderilen komutlar için algılayıcılar oluşturuluyor
     dp.add_handler(CommandHandler("yaz", getDictionary))
