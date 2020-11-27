@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 import logging
 import os
 import random
@@ -32,7 +34,7 @@ if mode == "dev":
         updater.start_polling()
 elif mode == "prod":
     def run(updater):
-        PORT = int(os.environ.get("PORT", 8443))
+        PORT = int(os.environ.get("REPLICA_PORT", 8443))
         HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
         updater.start_webhook(listen="0.0.0.0",
                               port=PORT,
@@ -45,28 +47,36 @@ else:
 
 # Global değişkenler
 DOC_JSON = "./doc/data.json"
-announcement_json_data = { "lastAnnouncement": "0", "chatIDs": set([]) } # DESTEK: 1001285487723, TEST: '-466883632'
+announcement_json_data = { "lastAnnouncement": "0", "chatIDs": {'-3': 'Bilg. Müh. Destek', '-466883632': 'TEST GRUP'} } # DESTEK: 1001285487723, TEST: '-466883632'
 
 
 # ../doc/data.json dosyasından son gönderilen duyuruyu ve aktif olduğu chatleri getirir
 def getData():
     global announcement_json_data
-    f = open(DOC_JSON, "r")
-    data = json.loads(f.read())
+    try:
+        f = open(DOC_JSON, "r")
+        data = json.loads(f.read())
 
-    announcement_json_data["chatIDs"] = set(data['chatIDs'])
-    announcement_json_data["lastAnnouncement"] = data["lastAnnouncement"]
+        announcement_json_data["chatIDs"] = data['chatIDs']
+        announcement_json_data["lastAnnouncement"] = data["lastAnnouncement"]
+    except Exception as e:
+        print("'data.json' üzerinden veri çekilemedi. \n " + e)
 
 def updateData():
     global announcement_json_data
-    data = announcement_json_data.copy()
-    data['chatIDs'] = list(data['chatIDs'])
+    try:
+        data = announcement_json_data.copy()
+        data['chatIDs'] = data['chatIDs']
 
-    json_object = json.dumps(data, indent = 4)
-    with open(DOC_JSON, "w") as outfile:
-        outfile.write(json_object)
+        json_object = json.dumps(data, indent = 4, ensure_ascii = False)
+        with open(DOC_JSON, "w", encoding='utf8') as outfile:
+            outfile.write(json_object)
 
-    return json_object
+        getData()
+        return json_object
+    except Exception as e:
+        print("'data.json' dosyası güncellenemedi. \n " + e)
+
 
 # Duyuru ile ilgili veri döndürür
 def getAnnouncement(announcement, control = True):
@@ -98,13 +108,13 @@ def getAnnouncement(announcement, control = True):
             panel_body += str(val) + '=' + str(params[val]) + '&'
         return panel_body.rstrip('&')
 
-# Belirlenen(chat_id_set) yerlere duyuruyu gönderir.
+# Belirlenen(chat_id_dictionary) yerlere duyuruyu gönderir.
 def sendAnnouncement(ctx):
     global announcement_json_data
     try:
         lastAnnouncement = getAnnouncement(0).get('href')
         isEmptyLastAnnouncement = announcement_json_data["lastAnnouncement"].split('&')[1].split('=')[1]
-        print(isEmptyLastAnnouncement)
+
         if isEmptyLastAnnouncement != "0" and isEmptyLastAnnouncement != "":
             last = announcement_json_data["lastAnnouncement"]
         else:
@@ -131,8 +141,8 @@ def sendAnnouncement(ctx):
 
         announcement_json_data["lastAnnouncement"] = lastAnnouncement
 
-    except:
-        print("Siteye şu anda ulaşılamıyor...")
+    except Exception as e:
+        print("Siteden veri getirilemedi... \n" + e)
 
 # Betik çalıştırıldığında bir kere çalışır ve yeni duyuru varsa gruplara iletir.
 def start(ctx):
@@ -152,7 +162,7 @@ def help(update, context):
     help_message += "/yardim - Tüm komutları görmek istiyorum\n"
     help_message += "/ekle - Grubu duyurucuya ekler::YALNIZCA SAHİP ve YÖNETİCİ\n"
     help_message += "/cikar - Grubu duyurucudan çıkarır::YALNIZCA SAHİP ve YÖNETİCİ\n"
-    help_message += "/web_sayfasi - BTÜ BM Web sayfası\n"
+    help_message += "/web - BTÜ BM Web sayfası\n"
     update.message.reply_text(help_message)
 
 # /hakkinda komutu geldiğinde gerçekleştirilecek işlemler
@@ -167,44 +177,47 @@ def web(update, context):
 
 # /ekle komutu geldiğinde gerçekleştirilecek işlemler
 def add(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+    user = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
     global announcement_json_data
-    chat_id_set = announcement_json_data["chatIDs"]
+    chat_id_dictionary = announcement_json_data["chatIDs"]
 
     if user.status == "creator" or user.status == "administrator":
-        if chat_id_set.get(str(update.message.chat_id)) != None:
+        if chat_id_dictionary.get(str(update.message.chat.id)) != None:
             update.message.reply_text("Şu an da bu grup duyurucuya kayıtlı yeniden başlatmak için deneyin: \n /cikar ve ardından /ekle.")
         else:
-            chat_id_set[str(update.message.chat_id)] = True
+            chat_id_dictionary[str(update.message.chat.id)] = update.message.chat.title
             print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nDuyurucuya yeni bir grup eklendi - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
+            updateData()
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 # /cikar komutu geldiğinde gerçekleştirilecek işlemler
 def remove(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+    user = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
     global announcement_json_data
-    chat_id_set = announcement_json_data["chatIDs"]
+    chat_id_dictionary = announcement_json_data["chatIDs"]
 
     if user.status == "creator" or user.status == "administrator":
-        if chat_id_set.get(str(update.message.chat_id)) != None:
-            chat_id_set.pop(str(update.message.chat_id), None)
+        if chat_id_dictionary.get(str(update.message.chat.id)) != None:
+            chat_id_dictionary.pop(str(update.message.chat.id), None)
             print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nDuyurucudan bir grup çıkarıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
+            updateData()
         else:
             update.message.reply_text("Şu anda bu grup duyurucuda bulunmuyor. Grubu duyurucuya dahil etmek için: /add")
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
 # /yaz komutu geldiğinde gerçekleştirilecek işlemler
-def dictionary(update, context):
-    user = context.bot.getChatMember(update.message.chat_id,update.message.from_user['id'])
+def getDictionary(update, context):
+    member = context.bot.getChatMember(update.message.chat.id,update.message.from_user['id'])
     json_data = updateData()
-
-    if user.status == "creator" or user.status == "administrator":
-        print("#### GRUPLAR BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(json_data) + " \n#### GRUPLAR SON")
+    if member.status == "creator" or member.status == "administrator":
+        message = "#### VERİ BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(json_data) + " \n#### VERİ SON"
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
+        if update.message.from_user['id'] == 690194302: # 690194302 = fatiiates hesabına ait user id
+            update.message.reply_text(message)
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
@@ -241,7 +254,7 @@ def main():
     start(CallbackContext(dp))
 
     # Telegramdan gönderilen komutlar için algılayıcılar oluşturuluyor
-    dp.add_handler(CommandHandler("yaz", dictionary))
+    dp.add_handler(CommandHandler("yaz", getDictionary))
     dp.add_handler(CommandHandler("hakkinda", about))
     dp.add_handler(CommandHandler("yardim", help))
     dp.add_handler(CommandHandler("ekle", add))
