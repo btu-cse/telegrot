@@ -47,6 +47,7 @@ elif mode == "prod":
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
         start(CallbackContext(updater.dispatcher))
         updater.idle()
+        conn.close()
 else:
     logger.error("No MODE specified!")
     sys.exit(1)
@@ -62,15 +63,24 @@ initialState = {
     }
 }
 STATE = initialState
+mydb = None
 
-mydb = mysql.connector.connect(
-  host=os.getenv("REMOTE_SQL_SERVER"),
-  port="3306",
-  user=os.getenv("REMOTE_SQL_USER"),
-  password=os.getenv("REMOTE_SQL_PWD"),
-  database=os.getenv("REMOTE_SQL_USER"),
-  charset='utf8',
-)
+
+def mysqlConnect():
+    global mydb
+    try:
+        db = mysql.connector.connect(
+          host=os.getenv("REMOTE_SQL_SERVER"),
+          port="3306",
+          user=os.getenv("REMOTE_SQL_USER"),
+          password=os.getenv("REMOTE_SQL_PWD"),
+          database=os.getenv("REMOTE_SQL_USER"),
+          charset='utf8',
+        )
+        mydb = db
+    except Exception as e:
+            print("Uzak sunucuya bağlanılamıyor. \n " + e)
+        raise
 
 # Uzak sunucudan son gönderilen duyuruyu ve aktif olduğu chatleri getirir
 def getData():
@@ -82,6 +92,7 @@ def getData():
         result = mycursor.fetchall()
         STATE["chatIDs"] = eval(result[0][1])
         STATE["lastAnnouncement"] = result[0][0]
+        mycursor.close()
 
     except Exception as e:
         if STATE['lastAnnouncement'] == "0":
@@ -100,6 +111,7 @@ def updateData():
         mydb.commit()
         print(mycursor.rowcount, "satır(lar) güncellendi")
         getData()
+        mycursor.close()
 
     except Exception as e:
         print("Uzak sunucuya veri gönderilemiyor. \n " + e)
@@ -176,9 +188,11 @@ def sendAnnouncement(ctx):
 
 # Betik çalıştırıldığında bir kere çalışır ve yeni duyuru varsa gruplara iletir.
 def start(ctx):
-    getData()
-    sendAnnouncement(ctx)
-    updateData()
+    mysqlConnect()
+    if(mydb != None):
+        getData()
+        sendAnnouncement(ctx)
+        updateData()
 
 # /help komutu geldiğinde gerçekleştirilecek işlemler
 def help(update, context):
@@ -218,7 +232,8 @@ def add(update, context):
             chat_id_dictionary[str(update.message.chat.id)] = update.message.chat.title
             print("### İŞLEM BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \nDuyurucuya yeni bir grup eklendi - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
-            updateData()
+            if mydb != None:
+                updateData()
     else:
         update.message.reply_text("Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
@@ -233,7 +248,8 @@ def remove(update, context):
             chat_id_dictionary.pop(str(update.message.chat.id), None)
             print("### İŞLEM BAŞLANGIÇ -  TARİH: " + str(datetime.now()) + " \nDuyurucudan bir grup çıkarıldı - Chat: " + str(update.message.chat) + " \n### İŞLEM SON")
             update.message.reply_text("Komut başarıyla çalıştırıldı.")
-            updateData()
+            if mydb != None:
+                updateData()
         else:
             update.message.reply_text("Şu anda bu grup duyurucuda bulunmuyor. Grubu duyurucuya dahil etmek için: /add")
     else:
