@@ -80,7 +80,6 @@ def mysqlConnect():
         mydb = db
     except Exception as e:
             print("Uzak sunucuya bağlanılamıyor. \n " + e)
-        raise
 
 # Uzak sunucudan son gönderilen duyuruyu ve aktif olduğu chatleri getirir
 def getData():
