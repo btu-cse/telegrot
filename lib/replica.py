@@ -55,13 +55,9 @@ else:
 
 # GLOBAL DEĞİŞKENLER
 
-# DESTEK: 1001285487723, TEST: '-466883632'
 initialState = {
     "lastAnnouncement": "0",
-    "chatIDs": {
-        '-3': 'Bilg. Müh. Destek',
-        '-466883632': 'TEST GRUP'
-    }
+    "chatIDs": eval(os.getenv('CHAT_ID'))
 }
 STATE = initialState
 mydb = None
