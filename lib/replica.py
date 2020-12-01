@@ -47,7 +47,8 @@ elif mode == "prod":
         updater.bot.set_webhook("https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN))
         start(CallbackContext(updater.dispatcher))
         updater.idle()
-        conn.close()
+        if mydb != None:
+            mydb.close()
 else:
     logger.error("No MODE specified!")
     sys.exit(1)
