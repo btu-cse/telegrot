@@ -75,7 +75,7 @@ def mysqlConnect():
           port="3306",
           user=os.getenv("REMOTE_SQL_USER"),
           password=os.getenv("REMOTE_SQL_PWD"),
-          database=os.getenv("REMOTE_SQL_USER"),
+          database=os.getenv("REMOTE_SQL_DB"),
           charset='utf8',
         )
         mydb = db
