@@ -80,11 +80,11 @@ def help(update, context):
     update.message.reply_text(help_message)
 
 def hakkinda(update, context):
-    update.message.reply_text("Tanıtım destek botumuz, bölüm öğrencilerimiz Fatih Ateş, Furkan Portakal, Alperen Orhan ve Arş. Gör. Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif"
+    update.message.reply_text("Tanıtım destek botumuz, bölüm öğrencilerimiz Fatih Ateş, Furkan Portakal, Alperen Orhan ve Ahmet Kaşif tarafından geliştirilmiştir. Öneri ve isteklerinizi için : @ahmetkasif"
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def web_sayfasi(update, context):
-    update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz."
+    update.message.reply_text("Bölüm Web sayfasına http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def akademik_tanitim(update, context):
@@ -96,11 +96,11 @@ def youtube_tanitim(update, context):
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def akademik_kadro(update, context):
-    update.message.reply_text("Bölümümüzde 1 Profesör, 1 Doçent, 6 Doktor Öğretim Üyesi ve 5 Araştırma Görevlisi görev yapmaktadır. Akademik Personel Yapay Zeka, Veri Madenciliği, Siber Güvenlik, Bioinformatik gibi alanlarda uzmanlıklara sahiptir. Detaylara http://bilgisayar.btu.edu.tr/index.php?page=akademikkadro&sid=6700 adresinden erişebilirsiniz"
+    update.message.reply_text("Bölümümüzde 1 Profesör, 1 Doçent, 7 Doktor Öğretim Üyesi ve 5 Araştırma Görevlisi görev yapmaktadır. Akademik Personel Yapay Zeka, Veri Madenciliği, Siber Güvenlik, Bioinformatik gibi alanlarda uzmanlıklara sahiptir. Detaylara http://bilgisayar.btu.edu.tr/index.php?page=akademikkadro&sid=6700 adresinden erişebilirsiniz."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def bolum_tarihi(update, context):
-    update.message.reply_text("Bursa Teknik Üniversitesi, Mühendislik ve Mimarlık Fakültesi içerisinde yer alan Bilgisayar Mühendisliği Bölümü 2015 yılında kurulmuştur. 2016 yılında KHK ile kapatılan Bursa Orhangazi Üniversitesi'nin Bilgisayar Mühendisliği (İngilizce) bölümü öğrencilerinin eğitimlerini sürdürebilmesi amacıyla YÖK tarafından bölümümüz İngilizce olarak eğitime başlamıştır. Şu an bölümümüzde 667 Karar Sayılı KHK Kapsamındaki Özel Öğrenciler ve Yabancı Öğrenciler öğrenimlerine %100 ingilizce olarak devam etmektedirler. Bu program, 'Özel ve Yabancı öğrenciler' mezun olduğunda kapanacaktır ve ÖSYM puanıyla öğrenci almamaktadır. Bilgisayar Mühendisliği (Türkçe) programı ise 2018 yılında isteğe bağlı İngilizce hazırlık sınıfı seçeneğiyle kurulmuş olup ilk öğrencilerini 2018 Üniversite Giriş sınavı sonuçlarıyla almıştır."
+    update.message.reply_text("Bilgisayar Mühendisliği Bölümü, Bursa Teknik Üniversitesi Mühendislik ve Doğa Bilimleri Fakültesi bünyesinde 2015 yılında kurulmuş ve bu tarihten itibaren faaliyetlerine devam etmektedir. 2016 yılında KHK ile kapatılan Bursa Orhangazi Üniversitesi'nin Bilgisayar Mühendisliği (İngilizce) bölümü öğrencilerinin eğitimlerini sürdürebilmesi amacıyla YÖK tarafından bölümümüzüz İngilizce programı açılmıştır. Bu program 2021 yılında tüm öğrencilerini mezun etmiş ve kapatılmıştır. Bilgisayar Mühendisliği (Türkçe) programı 2018 yılında isteğe bağlı İngilizce hazırlık sınıfı seçeneğiyle kurulmuş olup ilk öğrencilerini 2018 Üniversite Giriş sınavı sonuçlarıyla almıştır."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def yok_atlas(update, context):
@@ -108,7 +108,7 @@ def yok_atlas(update, context):
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def sep_bilgi(update, context):
-    update.message.reply_text("SEP programı ÖSYM kılavuzunda özel koşul olarak yer almaktadır, bütün öğrencilerimiz dahildir. 7 dönem ders ve 1 dönem proje bazlı işyeri eğitimi vardır. İşyeri eğitimi süresince devlet tarafından SGK nız ödenir ve asgari ücretin 1/3 ü kadar maaş alırsınız. İşyeri eğitimi yaptığınız işveren sizi işe aldığında işverene de devlet teşviği vardır. Daha fazlası için http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz."
+    update.message.reply_text("SEP programı ÖSYM kılavuzunda özel koşul olarak yer almaktadır, bütün öğrencilerimiz eğitim süreçlerinde 7 dönem ders ve 1 dönem SEP uygulaması üzere eğitim görmektedirler. SEP süresince öğrencinin SGK primleri devlet tarafından karşılanmakta ve öğrenciye asgari ücretin 1/3 ü kadar aylık verilmektedir. Daha fazlası için http://sep.btu.edu.tr adresinden detaylı bilgi edinebilirsiniz."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def sep_anlasmali_sirketler(update, context):
@@ -132,7 +132,7 @@ def lisans_programi(update, context):
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def erasmus(update, context):
-    update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır. Geçtiğimiz yıl 2 öğrenci Erasmus ile yurtdışında eğitim görme hakkı elde etmiştir."
+    update.message.reply_text("Bölümümüzün Almanya, İtalya, İspanya ve Kosova'da bulunan çeşitli üniversiteler ile Erasmus anlaşmaları bulunmaktadır. Geçtiğimiz 2019 yılında 2 öğrenci Erasmus ile yurtdışında eğitim görme hakkı elde etmiştir."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def farabi(update, context):
@@ -143,7 +143,7 @@ def mevlana(update, context):
     update.message.reply_text("Güncellenmektedir." + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def cap(update, context):
-    update.message.reply_text("Bilgisayar Mühendisliği öğrencilerinin BTÜ'deki diğer tüm bölümler ile ÇAP yapma imkanı bulunmaktadır"
+    update.message.reply_text("Bilgisayar Mühendisliği öğrencilerinin BTÜ'deki diğer tüm bölümler ile ÇAP yapma imkanı bulunmaktadır."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def yandal(update, context):
@@ -158,7 +158,7 @@ def staj(update, context):
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def anabilim_dallari(update, context):
-    update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri ve Bilgisayar Donanımı olmak üzere 3 anabilim dalı bulunmaktadır."
+    update.message.reply_text("Bölümümüzde Bilgisayar Yazılımı, Bilgisayar Bilimleri, Bilgisayar Donanımı ve Siber Güvenlik olmak üzere 4 anabilim dalı bulunmaktadır."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def arastirma_gruplari_projeler(update, context):
@@ -172,11 +172,11 @@ def yurt(update, context):
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def mudek(update, context):
-    update.message.reply_text("Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabiliyor. Bilgisayar Müh. Türkçe programı 2018'den beri öğrenci alıyor, mezun verildiğinde akreditasyon başvurusu yapılacaktır"
+    update.message.reply_text("Bir bölüm ilk mezununu verdikten sonra akreditasyon için başvurabilmektedir. Bilgisayar Mühendisliği Türkçe programı 2018'den beri öğrenci almaktadır, mezun verildiğinde akreditasyon başvurusu yapılacaktır."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def mezun_yl(update, context):
-    update.message.reply_text("Bölümümüz 2017 den beri mezun vermektedir, bu mezunların büyük bir kısmı yabancı kökenli öğrenciler olduğu için çoğu yurt dışındadır. Bu yıl mezun olan öğrencilerilerimizden bir öğrencimiz de bu gruptadır, diplomasını aldığı gün Bursa'da Nestle Ar-Ge merkezinde işe başladı"
+    update.message.reply_text("Bölümümüz 2017 yılından beri mezun vermektedir, bu mezunların büyük bir kısmı yabancı kökenli öğrenciler olduğundan çoğunluğu yurt dışında kariyerlerini sürdürmektedirler."
     + str(new_question_message()), reply_markup=new_question_keyboard())
 
 def prog_dilleri(update, context):
@@ -193,7 +193,7 @@ def new_question_callback(update, context):
   if query.data == 'new_question_yes':
       help(query, context)
   elif query.data == 'new_question_no':
-      query.message.reply_text("İyi günler. Her zaman hizmetinizdeyim...")
+      query.message.reply_text("Merhaba, Nasıl yardımcı olabilirim?")
   else:
       query.message.reply_text("Bir sorun var! Error Code:208.")
 
