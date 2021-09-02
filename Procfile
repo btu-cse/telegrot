@@ -1,1 +1,1 @@
-web: python3 lib/tanitim.py
+web: python3 lib/replica.py
