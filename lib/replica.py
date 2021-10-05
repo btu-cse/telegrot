@@ -6,6 +6,7 @@ import random
 import sys
 import requests
 import json
+import urllib3
 import urllib.parse as urlparse
 import mysql.connector
 
@@ -17,6 +18,9 @@ from threading import Thread, Event
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
+
+# İstek hatalarının çıktılarını bozmasını engeller
+urllib3.disable_warnings()
 
 # Heroku'dan REPLICA_TOKEN değişkenini getirir
 TOKEN = os.getenv("REPLICA_TOKEN")
@@ -122,7 +126,7 @@ def getAnnouncement(announcement, control = True):
         SITEURL = 'http://bilgisayar.btu.edu.tr/index.php'
 
         # Siteden gelen dönütü düzenler
-        page = requests.get(SITEURL, params=params)
+        page = requests.get(SITEURL, params=params, verify=False)
         soup = BeautifulSoup(page.content, 'html.parser')
         container = soup.find_all("div", {"class" : "container"})[2]
         row = container.find_all("div", {"class" : "row"})[0]
