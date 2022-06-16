@@ -128,7 +128,7 @@ def getAnnouncement(announcement, control = True):
         # Siteden gelen dönütü düzenler
         page = requests.get(SITEURL, params=params, verify=False)
         soup = BeautifulSoup(page.content, 'html.parser')
-        container = soup.find_all("div", {"class" : "container"})[2]
+        container = soup.find_all("div", {"class" : "container"})[1]
         row = container.find_all("div", {"class" : "row"})[0]
         column = row.find_all("div", {"class" : "col-md-9"})[0]
 
