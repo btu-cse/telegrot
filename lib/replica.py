@@ -1,20 +1,14 @@
 # -*- coding:utf-8 -*-
-
 import logging
 import os
-import random
 import sys
 import requests
 import json
 import urllib3
-import urllib.parse as urlparse
 import mysql.connector
 
 from datetime import datetime
-from emoji import emojize
 from bs4 import BeautifulSoup
-from time import sleep
-from threading import Thread, Event
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
@@ -25,6 +19,9 @@ urllib3.disable_warnings()
 # Heroku'dan REPLICA_TOKEN değişkenini getirir
 TOKEN = os.getenv("REPLICA_TOKEN")
 url = "https://api.telegram.org/bot" + TOKEN
+
+# DUYURULARIN GÖNDERİLMEMESİ İÇİN KONTROL ANAHTARI
+CONTROL_KEY = os.getenv("CONTROL_KEY")
 
 # Heroku'dan USER_ID değişkenini getirir
 USER_ID = eval(os.getenv("USER_ID"))
@@ -165,6 +162,7 @@ def sendAnnouncement(ctx):
         i = 0
         list = []
         while last != newLast:
+
             list.append(newLast)
             i += 1
             if i > 3:
@@ -175,6 +173,10 @@ def sendAnnouncement(ctx):
         for value in list:
             message_text = '\nDUYURU: \n'
             message_text += getAnnouncement(value, False)
+            if CONTROL_KEY in message_text:
+                print('{0} id\'sine sahip duyuru kontrol keyini içeriyor, gruplara gönderilmedi.'.format(value))
+                continue
+
             for key in STATE["chatIDs"]:
                 try:
                     context.bot.send_message(chat_id=key, text=message_text)
@@ -263,7 +265,6 @@ def getDictionary(update, context):
     if member.status == "creator" or member.status == "administrator":
         message = "#### VERİ BAŞLANGIÇ - TARİH: " + str(datetime.now()) + " \n" + str(json_data) + " \n#### VERİ SON"
         update.message.reply_text("Komut başarıyla çalıştırıldı.")
-        print(message)
         for key in USER_ID.keys():
             if update.message.from_user['id'] == USER_ID[key]:
                 update.message.reply_text(message)
