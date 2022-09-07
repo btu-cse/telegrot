@@ -20,6 +20,10 @@ TOKEN bilgisi güvenlik nedeniyle Heroku üzerinde saklanmaktadır.
 
 ### Duyuru Replica Bot
 
+### CONTROL_KEY 
+
+CONTROL_KEY değişkeni içerisinDE belirlenen key duyurunun içerisinde geçiyorsa o duyuru telegram gruplarına gönderilir. Aksi takdirde gruplara o duyuru gönderilmez. Tavsiye edilen değer "öğrenci" olarak atanmasıdır.
+
 &emsp;&emsp;Gerekli kurulumları yaptıktan sonra tanıtım botunun bir kopyasını çalıştırmak için öncelikle "tanitim.py" içerisinde 18. satırdaki "TOKEN" değişkenini kendi
 botunuzun TOKEN bilgisi ile değiştirmelisiniz ve ardından 27. satırdaki "mode" değişkenini "dev" olarak güncellemelisiniz. Ardıdan tanıtım botunuzu aşağıdaki komutla başlatabilirsiniz:
     
