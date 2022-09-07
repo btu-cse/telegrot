@@ -173,7 +173,7 @@ def sendAnnouncement(ctx):
         for value in list:
             message_text = '\nDUYURU: \n'
             message_text += getAnnouncement(value, False)
-            if CONTROL_KEY in message_text:
+            if not CONTROL_KEY in message_text:
                 print('{0} id\'sine sahip duyuru kontrol keyini içeriyor, gruplara gönderilmedi.'.format(value))
                 continue
 
