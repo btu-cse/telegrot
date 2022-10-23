@@ -173,8 +173,11 @@ def sendAnnouncement(ctx):
         for value in list:
             message_text = '\nDUYURU: \n'
             message_text += getAnnouncement(value, False)
-            if not CONTROL_KEY in message_text:
-                print('{0} id\'sine sahip duyuru kontrol keyini içeriyor, gruplara gönderilmedi.'.format(value))
+            control_message_text = message_text.lower()
+            CONTROL_KEY = CONTROL_KEY.lower()
+            
+            if not CONTROL_KEY in control_message_text:
+                print('{0} id\'sine sahip duyuru kontrol keyini içermiyor, gruplara gönderilmedi.'.format(value))
                 continue
 
             for key in STATE["chatIDs"]:
