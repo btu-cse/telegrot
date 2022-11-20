@@ -1,0 +1,11 @@
+MODE_DEV = "dev"
+MODE_PROD = "prod"
+MODE_PROD_HEROKU = "prod_heroku"
+
+MODES = [
+    MODE_DEV,
+    MODE_PROD,
+    MODE_PROD_HEROKU
+]
+
+MAX_ANNOUNCEMENT_NUMBER_PER_CHECK = 5
