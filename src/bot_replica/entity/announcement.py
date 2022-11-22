@@ -1,10 +1,7 @@
-from peewee import Model, IntegerField, AutoField
-from src.utils.db import DB
+from peewee import IntegerField, AutoField
+from src.common.base_model import BaseModel
 
 
-class Announcement(Model):
+class Announcement(BaseModel):
     id = AutoField()
     announcement = IntegerField()
-
-    class Meta:
-        database = DB.get_default_db()

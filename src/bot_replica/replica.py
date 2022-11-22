@@ -12,7 +12,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 
 from src.lib.telegram_bot import TelegramBot
-from src.utils import logger
+from common import logger
 
 STATE = initialState
 

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 
 from src.lib.telegram_bot import TelegramBot
-from src.utils.logger import Logger
+from common.logger import Logger
 from src.scraper.scraper import Scraper
 from bot_replica.state import ReplicaState
-from src.utils import constants
+from common import constants
 
 logger = Logger.getLogger()
 

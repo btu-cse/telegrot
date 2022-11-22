@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from src.utils.logger import Logger
+from common.logger import Logger
 
 logger = Logger.getLogger()
 

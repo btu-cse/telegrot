@@ -2,7 +2,8 @@ import sys
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler
-from src.utils import logger, constants
+from common import constants
+from common import logger
 
 
 class TelegramBot:
