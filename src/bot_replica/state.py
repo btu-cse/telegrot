@@ -1,16 +1,16 @@
 from typing import List
 from src.bot_replica.entity.chat import Chat
-from src.utils.db import DB
+from src.bot_replica.entity.announcement import Announcement
+from src.common.logger import Logger
 
+logger = Logger.getLogger()
 
 class ReplicaState:
     __last_announcement: int
     __chats: List[Chat]
-    __db: DB
 
-    def __init__(self, db: DB) -> None:
-        self.__db = db
-        self.migrate(self.__db)
+    def __init__(self) -> None:
+        self.migrate()
 
     def set_last_announcement(self, last_announcement: int) -> None:
         self.__last_announcement = last_announcement
@@ -33,18 +33,13 @@ class ReplicaState:
         except:
             pass
 
-    def migrate(self, db: DB):
+    def migrate(self):
         try:
-            mycursor = mydb.cursor()
-            mycursor.execute(
-                "SELECT lastAnnouncement, chatIDs FROM data WHERE id=1 ")
-            result = mycursor.fetchall()
-            STATE["chatIDs"] = eval(result[0][1])
-            STATE["lastAnnouncement"] = result[0][0]
-            mycursor.close()
-
+            query = (Announcement
+                     .select()
+                     .order_by(Announcement.id.desc())
+                     .limit(1)
+                     )
+            logger.info(query)
         except Exception as e:
-            if STATE['lastAnnouncement'] == "0":
-                STATE['lastAnnouncement'] = getAnnouncement(
-                    0).get('href').split('&')[1].split('=')[1]
-            print("Uzak sunucudan veri getirilemedi. \n " + e)
+            print("hata var. \n ", e)

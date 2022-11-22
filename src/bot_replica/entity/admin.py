@@ -1,11 +1,7 @@
-from peewee import Model, IntegerField, CharField, AutoField
-from src.utils.db import DB
+from peewee import IntegerField, CharField, AutoField
+from src.common.base_model import BaseModel
 
-
-class Admin(Model):
+class Admin(BaseModel):
     id = AutoField()
     name = CharField(255)
     telegram_id = IntegerField()
-
-    class Meta:
-        database = DB.get_default_db()
