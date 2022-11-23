@@ -2,9 +2,12 @@ import os
 
 from peewee import MySQLDatabase
 
-from src.utils.env_loader import load_env
+from src.common.utils.env_loader import load_env
+from src.common.logger import Logger
 
 load_env()
+
+logger = Logger.getLogger()
 
 
 class DB:
@@ -22,7 +25,8 @@ class DB:
                     charset="utf8",
                 )
         except Exception as e:
-            print("Uzak sunucuya bağlanılamıyor. \n {}".format(e))
+            logger.error(
+                "there is an error while connecting to the DB. \n ", e)
 
     @staticmethod
     def get_default_db():
