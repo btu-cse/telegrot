@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-from common.logger import Logger
+from src.common.logger import Logger
 
 logger = Logger.getLogger()
+
 
 class Scraper:
     site_url: str = 'http://bilgisayar.btu.edu.tr/index.php'
@@ -28,10 +29,14 @@ class Scraper:
                 i += 1
 
         except Exception as e:
-            logger.error("Siteden duyuru getirilirken bir sorun oluştu, DUYURU NO: {0} \n {1}".format(
-                announcement, e))
+            logger.error("there is an error while getting announcement id from website, Announcement number: {0} \n".format(
+                announcement), e)
 
         return -1
+
+    @staticmethod
+    def get_last_announcement_id() -> int:
+        return Scraper.get_announcement_id(0)
 
     # gets last announcement's content: developed for sent the last announcement as a content
     @staticmethod
@@ -54,7 +59,7 @@ class Scraper:
 
             return panel_body.rstrip('&')
         except Exception as e:
-            logger.error("Siteden duyurunun içeriği getirilirken bir sorun oluştu, DUYURU NO: {0} \n {1}".format(
-                announcement, e))
+            logger.error("there is an error while getting announcement's content from website, Announcement number: {0} \n".format(
+                announcement), e)
 
         return ""
