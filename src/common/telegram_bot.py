@@ -30,7 +30,7 @@ class TelegramBot:
                 mode, ",".join("'%s'" % el for el in constants.MODES)))
             sys.exit(1)
 
-        if mode is constants.MODE_PROD_HEROKU and heroku_app_name is "":
+        if mode == constants.MODE_PROD_HEROKU and heroku_app_name == "":
             logger.error(
                 "when program working on the 'prod_heroku' mode it needs to 'heroku_app_name' parameter")
             sys.exit(1)
@@ -49,6 +49,7 @@ class TelegramBot:
 
     def run(self):
         self.call()
+
         if self.__mode == constants.MODE_DEV:
             self.run_dev()
         elif self.__mode == constants.MODE_PROD_HEROKU:
@@ -57,21 +58,15 @@ class TelegramBot:
             self.run_prod()
 
     def run_dev(self) -> None:
-        self.run()
-        # elf.__updater.start_polling()
-        self._updater.start_webhook(listen="0.0.0.0",
-                                    port=self.__port,
-                                    url_path=self.__token)
+        self._updater.start_polling()
 
     def run_prod(self) -> None:
-        self.run()
         # elf.__updater.start_polling()
         self._updater.start_webhook(listen="0.0.0.0",
                                     port=self.__port,
                                     url_path=self.__token)
 
     def run_heroku_webhook(self) -> None:
-        self.run()
         self._updater.start_webhook(listen="0.0.0.0",
                                     port=self.__port,
                                     url_path=self.__token)
@@ -79,9 +74,9 @@ class TelegramBot:
             "https://{}.herokuapp.com/{}".format(self.__heroku_app_name, self.__token))
 
     def call(self):
-        updater = Updater(self.__token, use_context=True)
+        self._updater = Updater(self.__token, use_context=True)
 
-        dp = updater.dispatcher
+        dp = self._updater.dispatcher
 
         for handler in self.__handlers:
             dp.add_handler(handler)

@@ -5,11 +5,12 @@ import json
 from src.common.telegram_bot import TelegramBot
 from src.common.logger import Logger
 from src.scraper.scraper import Scraper
-from src.bot_replica.state import ReplicaState
+from src.bot_replica.state.state import ReplicaState
 from src.common import constants
 from src.bot_replica.entity.chat import Chat
+from src.bot_replica.entity.admin import Admin
 
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
+from telegram.ext import CommandHandler, CallbackQueryHandler
 
 logger = Logger.getLogger()
 
@@ -28,6 +29,7 @@ class ReplicaTelegramBot(TelegramBot):
 
         self.__control_key = control_key
         self.__replica_state = ReplicaState()
+        self.run()
 
     # sends new announcements to the telegram chats: developed for the announcing to students/teachers/everybody about news
     def send_announcements_to_chats(self, context):
@@ -37,8 +39,8 @@ class ReplicaTelegramBot(TelegramBot):
                 pass
 
             last = lastAnnouncement
-            if self.__replica_state.get_last_announcement() > 0:
-                last = self.__replica_state.get_last_announcement()
+            if self.__replica_state.announcement.get_last_announcement().announcement != -1:
+                last = self.__replica_state.announcement.get_last_announcement()
 
             newLast = lastAnnouncement
             i = 0
@@ -57,21 +59,23 @@ class ReplicaTelegramBot(TelegramBot):
                 message_text += Scraper.get_announcement_content_by_id(value)
                 if self.__control_key in message_text:
                     logger.error(
-                        '{0} id\'sine sahip duyuru kontrol keyini içeriyor, gruplara gönderilmedi.'.format(value))
+                        'announcement {} is contains CONTROL_KEY, this will not sent to the chats'.format(value))
                     continue
 
-                for key in self.__replica_state.get_chats():
+                for chat in self.__replica_state.chat.get_chats():
                     try:
                         context.bot.send_message(
-                            chat_id=key, text=message_text)
+                            chat_id=chat.telegram_id, text=message_text)
                     except:
                         logger.error(
-                            '{0} Chat id\'sine sahip sohbete duyuru gönderilemedi.'.format(key))
+                            'cannot send the announcement to the chat {} '.format(chat.telegram_id))
 
-            self.__replica_state.set_last_announcement(lastAnnouncement)
+            self.__replica_state.announcement.set_last_announcement(
+                lastAnnouncement)
 
         except Exception as e:
-            logger.error("Siteden veri getirilemedi... \n {}".format(e))
+            logger.error(
+                "there is an error while sending announcements to the chats", e)
 
     def help_command(self, update, context):
         """Send a message when the command /help is issued."""
@@ -85,6 +89,7 @@ class ReplicaTelegramBot(TelegramBot):
         help_message += "/ekle - Grubu duyurucuya ekler::YALNIZCA SAHİP ve YÖNETİCİ\n"
         help_message += "/cikar - Grubu duyurucudan çıkarır::YALNIZCA SAHİP ve YÖNETİCİ\n"
         help_message += "/web - BTÜ BM Web sayfası\n"
+
         update.message.reply_text(help_message)
 
     def about_command(self, update, context):
@@ -101,12 +106,12 @@ class ReplicaTelegramBot(TelegramBot):
 
         if user.status == "creator" or user.status == "administrator":
             try:
-                _ = self.__replica_state.get_chats().index(
+                _ = self.__replica_state.chat.get_chats().index(
                     Chat(telegram_id=update.message.chat.id))
                 update.message.reply_text(
-                    "Şu an da bu grup duyurucuya zaten kayıtlı.")
+                    "Şu an da bu sohbet duyurucuya zaten kayıtlı.")
             except ValueError:
-                if self.__replica_state.append_chat(Chat(telegram_id=update.message.chat.id, name=update.message.chat.title)):
+                if self.__replica_state.chat.append_chat(Chat(telegram_id=update.message.chat.id, name=update.message.chat.title)):
                     update.message.reply_text("Komut başarıyla çalıştırıldı.")
                 else:
                     update.message.reply_text(
@@ -127,19 +132,19 @@ class ReplicaTelegramBot(TelegramBot):
 
         if user.status == "creator" or user.status == "administrator":
             try:
-                _ = self.__replica_state.get_chats().index(
+                _ = self.__replica_state.chat.get_chats().index(
                     Chat(telegram_id=update.message.chat.id))
-                self.__replica_state.remove_chat(
+                self.__replica_state.chat.remove_chat(
                     Chat(telegram_id=update.message.chat.id))
 
                 update.message.reply_text(
                     "Grup duyurucudan başarıyla çıkartıldı.")
             except ValueError:
-                if self.__replica_state.append_chat(Chat(telegram_id=update.message.chat.id, name=update.message.chat.title)):
-                    update.message.reply_text("Komut başarıyla çalıştırıldı.")
-                else:
-                    update.message.reply_text(
-                        "Komut çalıştırılırken bilinmeyen bir hata oluştu. Lütfen yöneticilere bildiriniz.")
+                logger.error("chat {} is not already in chat list".format(
+                    update.message.chat.id))
+                update.message.reply_text(
+                    "Bu sohbet zaten listede değil.")
+
             except Exception as e:
                 logger.error("there is an error while removing a new group", e)
                 update.message.reply_text(
@@ -153,25 +158,26 @@ class ReplicaTelegramBot(TelegramBot):
         member = context.bot.getChatMember(
             update.message.chat.id, update.message.from_user['id'])
         json_data = json.dumps(
-            self.__replica_state.get_chats(), indent=4, ensure_ascii=False)
+            self.__replica_state.chat.get_chats(), indent=4, ensure_ascii=False)
 
         if member.status == "creator" or member.status == "administrator":
             message = "#### VERİ BAŞLANGIÇ - TARİH: " + \
                 str(datetime.now()) + " \n" + \
                 str(json_data) + " \n#### VERİ SON"
-            update.message.reply_text("Komut başarıyla çalıştırıldı.")
 
-            for key in USER_ID.keys():
-                if update.message.from_user['id'] == USER_ID[key]:
-                    update.message.reply_text(message)
+            try:
+                _ = self.__replica_state.admin.get_admins().index(
+                    Admin(telegram_id=update.message.from_user['id']))
+                update.message.reply_text(message)
+            except ValueError:
+                update.message.reply_text(
+                    "Yalnızca veritabanında kayıtlı adminler bu komutu kullanabilir.")
+
         else:
             update.message.reply_text(
                 "Yalnızca admin ve yöneticiler komutları kullanabilir.")
 
     def run(self):
-
-        # Dispatcher'ı erişilebilir bir değişkene atar
-        dp = self._updater.dispatcher
 
         # Telegramdan gönderilen komutlar için algılayıcılar oluşturuluyor
         self.add_handler(CommandHandler("yaz", self.get_all_chats_command))
