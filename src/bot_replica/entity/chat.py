@@ -8,4 +8,10 @@ class Chat(BaseModel):
     telegram_id = IntegerField(unique=True)
 
     def __eq__(self, other):
-        return self.id == other.id
+        return self.telegram_id == other.telegram_id
+
+    def __str__(self):
+        return str(self.name)
+
+    def __repr__(self):
+        return str(self.name)

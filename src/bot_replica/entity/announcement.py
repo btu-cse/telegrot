@@ -5,3 +5,9 @@ from src.common.base_model import BaseModel
 class Announcement(BaseModel):
     id = AutoField()
     announcement = IntegerField()
+
+    def __str__(self):
+        return str(self.announcement)
+
+    def __format__(self):
+        return str(self.announcement)

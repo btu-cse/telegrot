@@ -26,7 +26,7 @@ class DB:
                 )
         except Exception as e:
             logger.error(
-                "there is an error while connecting to the DB. \n ", e)
+                "there is an error while connecting to the DB ", e)
 
     @staticmethod
     def get_default_db():

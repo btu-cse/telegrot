@@ -59,7 +59,7 @@ class Scraper:
 
             return panel_body.rstrip('&')
         except Exception as e:
-            logger.error("there is an error while getting announcement's content from website, Announcement number: {0} \n".format(
+            logger.error("there is an error while getting announcement's content from website, Announcement number: {0}".format(
                 announcement), e)
 
         return ""
