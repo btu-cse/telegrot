@@ -33,11 +33,11 @@ class ChatState:
 
     def remove_chat(self, chat: Chat) -> bool:
         try:
-            if not self.__remove_chat_to_db(chat):
+            if not self.__remove_chat_from_db(chat):
                 return False
 
             self.__chats.remove(chat)
-            logger.info("remove chat id => {}, name => {}".format(
+            logger.info("removed chat id => {}, name => {}".format(
                 chat.telegram_id, chat.name))
         except:
             pass
@@ -85,11 +85,12 @@ class ChatState:
 
         return True
 
-    def __remove_chat_to_db(self, chat: Chat) -> bool:
+    def __remove_chat_from_db(self, chat: Chat) -> bool:
         try:
             _ = (Chat
                      .delete()
                      .where(Chat.telegram_id == chat.telegram_id)
+                     .execute()
                      )
         except Exception as e:
             logger.error(

@@ -25,6 +25,9 @@ class AnnouncementState:
     def get_last_announcement(self) -> Announcement:
         return self.__last_announcement
 
+    def get_last_announcement_as_id(self):
+        return self.__last_announcement.announcement
+
     def migrate_last_announcement(self):
         try:
             row = (Announcement

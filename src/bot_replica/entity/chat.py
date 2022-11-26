@@ -15,3 +15,10 @@ class Chat(BaseModel):
 
     def __repr__(self):
         return str(self.name)
+
+    def toJSON(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "telegram_id": self.telegram_id,
+        }
