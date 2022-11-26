@@ -11,3 +11,9 @@ class Announcement(BaseModel):
 
     def __format__(self):
         return str(self.announcement)
+
+    def toJson(self):
+        yield {
+            "id": self.id,
+            "announcement": self.announcement,
+        }.items()

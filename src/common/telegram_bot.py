@@ -1,4 +1,5 @@
 import sys
+from typing import Callable
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler
@@ -44,6 +45,8 @@ class TelegramBot:
         self.__heroku_app_name = heroku_app_name
         self.__port = port
 
+        self._updater = Updater(self.__token, use_context=True)
+
     def add_handler(self, handler):
         self.__handlers.append(handler)
 
@@ -61,7 +64,6 @@ class TelegramBot:
         self._updater.start_polling()
 
     def run_prod(self) -> None:
-        # elf.__updater.start_polling()
         self._updater.start_webhook(listen="0.0.0.0",
                                     port=self.__port,
                                     url_path=self.__token)
@@ -74,7 +76,6 @@ class TelegramBot:
             "https://{}.herokuapp.com/{}".format(self.__heroku_app_name, self.__token))
 
     def call(self):
-        self._updater = Updater(self.__token, use_context=True)
 
         dp = self._updater.dispatcher
 
@@ -93,6 +94,18 @@ class TelegramBot:
 
     def start_command(self, update, context):
         self.help_command(update, context)
+
+    @staticmethod
+    def Command(command: Callable) -> Callable:
+        def new_command(update, context):
+            try:
+                command(update, context)
+            except Exception as e:
+                logger.error("there is an unexpected error on '{}'".format(command.__name__), e)
+                update.message.reply_text(
+                    "Bilinmeyen bir hata oluştu, bu komut şu an kullanılamıyor.")
+
+        return new_command
 
     def new_question_callback(self, update, context):
         query = update.callback_query
