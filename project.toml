@@ -1,0 +1,17 @@
+[project]
+id = "fatiiates.btu.replicabot"
+name = "BTU REPLICA BOT"
+version = "0.1"
+
+[build]
+exclude = [
+    ".env",
+    ".env.test",
+    ".gitignore",
+    ".vscode",
+    ".docs",
+    "docker-compose*",
+    "Makefile",
+    "runtime.txt",
+    "volumes"
+]

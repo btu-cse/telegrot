@@ -1,0 +1,9 @@
+.env
+.gitignore
+.vscode
+.docs
+docker-compose*
+Makefile
+Procfile
+runtime.txt
+volumes

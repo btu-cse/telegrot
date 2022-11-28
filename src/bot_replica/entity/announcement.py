@@ -9,7 +9,7 @@ class Announcement(BaseModel):
     def __str__(self):
         return str(self.announcement)
 
-    def __format__(self):
+    def __repr__(self):
         return str(self.announcement)
 
     def toJson(self):

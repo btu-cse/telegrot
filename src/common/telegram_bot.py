@@ -5,59 +5,50 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler
 from src.common import constants
 from src.common.logger import Logger
-
-logger = Logger.getLogger()
-
-
+ 
 class TelegramBot:
     _token: str
     _mode: str
     _port: int
-    _heroku_app_name: str
+    _web_hook_url: str
     _updater: Updater
     _handlers: list
 
-    def __init__(self, token: str, mode: str, heroku_app_name: str = "", port: int = 8443) -> None:
+    def __init__(self, token: str, mode: str, web_hook_url: str = "", port: int = constants.DEFAULT_PORT) -> None:
         if token == "":
-            logger.error("'token' cannot be empty")
-            sys.exit(1)
+            Logger.fatal("'token' cannot be empty")
 
         if mode == "":
-            logger.error("'mode' cannot be empty")
-            sys.exit(1)
+            Logger.fatal("'mode' cannot be empty")
 
         if not mode in constants.MODES:
-            logger.error("mode {} is not supported. supported modes are => {}".format(
+            Logger.fatal("mode {} is not supported. supported modes are => {}".format(
                 mode, ",".join("'%s'" % el for el in constants.MODES)))
-            sys.exit(1)
 
-        if mode == constants.MODE_PROD_HEROKU and heroku_app_name == "":
-            logger.error(
-                "when program working on the 'prod_heroku' mode it needs to 'heroku_app_name' parameter")
-            sys.exit(1)
+        if mode == constants.MODE_PROD and web_hook_url == "":
+            Logger.fatal(
+                "when program working on the 'prod' mode it needs to 'web_hook_url' parameter")
 
-        self.__token = token
-        self.__mode = mode
-        self.__handlers = [
+        self._token = token
+        self._mode = mode
+        self._handlers = [
             CommandHandler("start", self.start_command),
             CommandHandler("help", self.help_command)
         ]
-        self.__heroku_app_name = heroku_app_name
-        self.__port = port
+        self._web_hook_url = web_hook_url
+        self._port = port
 
-        self._updater = Updater(self.__token, use_context=True)
+        self._updater = Updater(self._token, use_context=True)
 
     def add_handler(self, handler):
-        self.__handlers.append(handler)
+        self._handlers.append(handler)
 
     def run(self):
         self.call()
 
-        if self.__mode == constants.MODE_DEV:
+        if self._mode == constants.MODE_DEV:
             self.run_dev()
-        elif self.__mode == constants.MODE_PROD_HEROKU:
-            self.run_heroku_webhook()
-        elif self.__mode == constants.MODE_PROD:
+        elif self._mode == constants.MODE_PROD:
             self.run_prod()
 
     def run_dev(self) -> None:
@@ -65,21 +56,16 @@ class TelegramBot:
 
     def run_prod(self) -> None:
         self._updater.start_webhook(listen="0.0.0.0",
-                                    port=self.__port,
-                                    url_path=self.__token)
+                                    port=self._port,
+                                    url_path=self._token)
 
-    def run_heroku_webhook(self) -> None:
-        self._updater.start_webhook(listen="0.0.0.0",
-                                    port=self.__port,
-                                    url_path=self.__token)
-        self._updater.bot.set_webhook(
-            "https://{}.herokuapp.com/{}".format(self.__heroku_app_name, self.__token))
+        self._updater.bot.set_webhook("{}/{}".format(self._web_hook_url, self._token))
 
     def call(self):
 
         dp = self._updater.dispatcher
 
-        for handler in self.__handlers:
+        for handler in self._handlers:
             dp.add_handler(handler)
 
     def help_command(self, update, context):
@@ -101,7 +87,7 @@ class TelegramBot:
             try:
                 command(update, context)
             except Exception as e:
-                logger.error("there is an unexpected error on '{}'".format(command.__name__), e)
+                Logger.error("there is an unexpected error on '{}'".format(command.__name__), e)
                 update.message.reply_text(
                     "Bilinmeyen bir hata oluştu, bu komut şu an kullanılamıyor.")
 

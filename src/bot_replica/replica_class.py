@@ -13,22 +13,21 @@ from src.bot_replica.entity.admin import Admin
 
 from telegram.ext import CommandHandler, CallbackQueryHandler, CallbackContext
 
-logger = Logger.getLogger()
-
 
 class ReplicaTelegramBot(TelegramBot):
     __control_key: str = ""
     __replica_state: ReplicaState
 
-    def __init__(self, token: str, mode: str, control_key: str = "", heroku_app_name: str = "", port: int = 8443) -> None:
+    def __init__(self, token: str, mode: str, control_key: str = "", web_hook_url: str = "", port: int = 80) -> None:
         super().__init__(
             token=token,
             mode=mode,
-            heroku_app_name=heroku_app_name,
+            web_hook_url=web_hook_url,
             port=port
         )
 
         self.__control_key = control_key
+        Logger.init("replica_bot")
         self.__replica_state = ReplicaState()
         self.run()
 
@@ -60,7 +59,7 @@ class ReplicaTelegramBot(TelegramBot):
                 message_text = '\nDUYURU: \n'
                 message_text += Scraper.get_announcement_content_by_id(value)
                 if self.__control_key != "" and self.__control_key in message_text:
-                    logger.info(
+                    Logger.info(
                         'announcement {} is contains CONTROL_KEY, this will not sent to the chats'.format(value))
                     continue
 
@@ -68,15 +67,19 @@ class ReplicaTelegramBot(TelegramBot):
                     try:
                         context.bot.send_message(
                             chat_id=chat.telegram_id, text=message_text)
+                        Logger.info(
+                            'new announcement {} sent to the chat {}'.format(value, chat))
+
                     except:
-                        logger.error(
+                        Logger.error(
                             'cannot send the announcement to the chat id = {}, name = {} '.format(chat.telegram_id, chat.name))
 
             self.__replica_state.announcement.set_last_announcement(
                 lastAnnouncement)
 
         except Exception as e:
-            logger.error(
+            print(e)
+            Logger.error(
                 "there is an error while sending announcements to the chats", e)
 
     def help_command(self, update, context):
@@ -115,21 +118,21 @@ class ReplicaTelegramBot(TelegramBot):
             except ValueError:
                 if self.__replica_state.chat.append_chat(Chat(telegram_id=update.message.chat.id, name=update.message.chat.title)):
                     update.message.reply_text("Komut başarıyla çalıştırıldı.")
-                    logger.info("manager added chat. chat {}, user => {}".format(update.message.chat,
+                    Logger.info("manager added chat. chat {}, user => {}".format(update.message.chat,
                                                                                  update.message.from_user))
                 else:
-                    logger.info("someone tried to add chat but it failed. chat {}, user => {}".format(update.message.chat,
+                    Logger.info("someone tried to add chat but it failed. chat {}, user => {}".format(update.message.chat,
                                                                                                       update.message.from_user))
                     update.message.reply_text(
                         "Komut çalıştırılırken bilinmeyen bir hata oluştu.")
 
             except Exception as e:
-                logger.error("there is an error while adding a new group", e)
+                Logger.error("there is an error while adding a new group", e)
                 update.message.reply_text(
                     "Komut çalıştırma başarısız oldu.")
 
         else:
-            logger.info("someone who is not manager on the chat tried to add chat {}, user => {}".format(update.message.chat,
+            Logger.info("someone who is not manager on the chat tried to add chat {}, user => {}".format(update.message.chat,
                                                                                                          update.message.from_user))
             update.message.reply_text(
                 "Yalnızca admin ve yöneticiler komutları kullanabilir.")
@@ -148,20 +151,20 @@ class ReplicaTelegramBot(TelegramBot):
                     raise Exception("this chat cannot be removed")
                 update.message.reply_text(
                     "Grup duyurucudan başarıyla çıkartıldı.")
-                logger.info("chat removed from the list. chat => {}, user => {}".format(update.message.chat,
+                Logger.info("chat removed from the list. chat => {}, user => {}".format(update.message.chat,
                                                                                         update.message.from_user))
             except ValueError:
                 update.message.reply_text(
                     "Bu sohbet zaten listede değil.")
 
             except Exception as e:
-                logger.error("there is an error while removing a chat. chat => {}, user => {}".format(update.message.chat,
+                Logger.error("there is an error while removing a chat. chat => {}, user => {}".format(update.message.chat,
                                                                                                       update.message.from_user), e)
                 update.message.reply_text(
                     "Komut çalıştırma başarısız oldu.")
 
         else:
-            logger.info("someone tried remove chat. chat => {}, user => {}".format(update.message.chat,
+            Logger.info("someone tried remove chat. chat => {}, user => {}".format(update.message.chat,
                                                                                    update.message.from_user))
             update.message.reply_text(
                 "Yalnızca admin ve yöneticiler komutları kullanabilir.")
@@ -182,16 +185,16 @@ class ReplicaTelegramBot(TelegramBot):
                 _ = self.__replica_state.admin.get_admins().index(
                     Admin(telegram_id=update.message.from_user['id']))
                 update.message.reply_text(message)
-                logger.info("admin dumped chats, user => {}".format(
+                Logger.info("admin dumped chats, user => {}".format(
                     update.message.from_user))
             except ValueError:
-                logger.info("chat manager tried to dump chats, but it failed, user => {}".format(
+                Logger.info("chat manager tried to dump chats, but it failed, user => {}".format(
                     update.message.from_user))
                 update.message.reply_text(
                     "Yalnızca veritabanında kayıtlı adminler bu komutu kullanabilir.")
 
         else:
-            logger.info("someone tried to dump chats, user => {}".format(
+            Logger.info("someone tried to dump chats, user => {}".format(
                 update.message.from_user))
             update.message.reply_text(
                 "Yalnızca admin ve yöneticiler komutları kullanabilir.")

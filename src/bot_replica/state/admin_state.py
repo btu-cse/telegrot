@@ -3,9 +3,7 @@ from typing import List
 from src.bot_replica.entity.admin import Admin
 from src.common.logger import Logger
 from src.scraper.scraper import Scraper
-
-logger = Logger.getLogger()
-
+ 
 
 class AdminState:
     __admins: List[Admin] = []
@@ -13,7 +11,7 @@ class AdminState:
     def __init__(self) -> None:
         self.migrate()
         if len(self.__admins) > 0:
-            logger.info("init state: admins => %s", self.__admins)
+            Logger.info("init state: admins => %s", self.__admins)
 
     def set_admins(self, admins: List[Admin]) -> None:
         self.__admins = admins
@@ -26,7 +24,7 @@ class AdminState:
             return False
 
         self.__admins.append(admin)
-        logger.info("added new admin id => {}, name => {}".format(
+        Logger.info("added new admin id => {}, name => {}".format(
             admin.telegram_id, admin.name))
 
         return True
@@ -47,14 +45,14 @@ class AdminState:
                     )
 
             if len(rows) == 0:
-                logger.info("There is no Telegram admin in the DB")
+                Logger.info("There is no Telegram admin in the DB")
             else:
                 self.clear_admin()
                 for row in rows:
                     self.__admins.append(row)
 
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while migrating admin state", e)
 
     def __add_admin_to_db(self, admin: Admin) -> bool:
@@ -65,14 +63,14 @@ class AdminState:
                      .count()
                      )
             if count == 0:
-                logger.info("admin was already inserted")
+                Logger.info("admin was already inserted")
                 return False
 
             _ = (Admin
                  .create(name=admin.name, telegram_id=admin.telegram_id)
                  )
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while adding a new admin", e)
             return False
 
@@ -85,7 +83,7 @@ class AdminState:
             self.migrate_admins()
 
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while migrating states", e)
 
    
