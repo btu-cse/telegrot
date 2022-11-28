@@ -1,9 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from src.common.logger import Logger
-
-logger = Logger.getLogger()
-
+ 
 
 class Scraper:
     site_url: str = 'http://bilgisayar.btu.edu.tr/index.php'
@@ -29,7 +27,7 @@ class Scraper:
                 i += 1
 
         except Exception as e:
-            logger.error("there is an error while getting announcement id from website, Announcement number: {0} \n".format(
+            Logger.error("there is an error while getting announcement id from website, Announcement number: {0} \n".format(
                 announcement), e)
 
         return -1
@@ -59,7 +57,7 @@ class Scraper:
 
             return panel_body.rstrip('&')
         except Exception as e:
-            logger.error("there is an error while getting announcement's content from website, Announcement number: {0}".format(
+            Logger.error("there is an error while getting announcement's content from website, Announcement number: {0}".format(
                 announcement), e)
 
         return ""

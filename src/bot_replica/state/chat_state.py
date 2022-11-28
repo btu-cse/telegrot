@@ -3,17 +3,14 @@ from typing import List
 from src.bot_replica.entity.chat import Chat
 from src.common.logger import Logger
 from src.scraper.scraper import Scraper
-
-logger = Logger.getLogger()
-
-
+ 
 class ChatState:
     __chats: List[Chat] = []
 
     def __init__(self) -> None:
         self.migrate()
         if len(self.__chats) > 0:
-            logger.info("init state: chats => %s", self.__chats)
+            Logger.info("init state: chats => %s", self.__chats)
 
     def set_chats(self, chats: List[Chat]) -> None:
         self.__chats = chats
@@ -26,7 +23,7 @@ class ChatState:
             return False
 
         self.__chats.append(chat)
-        logger.info("added new chat id => {}, name => {}".format(
+        Logger.info("added new chat id => {}, name => {}".format(
             chat.telegram_id, chat.name))
 
         return True
@@ -37,7 +34,7 @@ class ChatState:
                 return False
 
             self.__chats.remove(chat)
-            logger.info("removed chat id => {}, name => {}".format(
+            Logger.info("removed chat id => {}, name => {}".format(
                 chat.telegram_id, chat.name))
         except:
             pass
@@ -54,14 +51,14 @@ class ChatState:
                     )
 
             if len(rows) == 0:
-                logger.info("There is no Telegram chat in the DB")
+                Logger.info("There is no Telegram chat in the DB")
             else:
                 self.clear_chat()
                 for row in rows:
                     self.__chats.append(row)
 
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while migrating chat state", e)
 
     def __add_chat_to_db(self, chat: Chat) -> bool:
@@ -72,14 +69,14 @@ class ChatState:
                      .count()
                      )
             if count == 1:
-                logger.info("chat was already inserted")
+                Logger.info("chat was already inserted")
                 return False
 
             _ = (Chat
                  .create(name=chat.name, telegram_id=chat.telegram_id)
                  )
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while adding a new chat", e)
             return False
 
@@ -93,7 +90,7 @@ class ChatState:
                      .execute()
                      )
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while removing a new chat", e)
             return False
 
@@ -105,5 +102,5 @@ class ChatState:
             self.migrate_chats()
 
         except Exception as e:
-            logger.error(
+            Logger.error(
                 "there is an issue with the DB while migrating states", e)

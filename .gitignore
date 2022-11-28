@@ -133,3 +133,5 @@ test.py
 
 volumes
 docker-compose.yml
+.env.test
+certs
