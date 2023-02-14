@@ -57,9 +57,10 @@ class TelegramBot:
     def run_prod(self) -> None:
         self._updater.start_webhook(listen="0.0.0.0",
                                     port=self._port,
-                                    url_path=self._token)
-
-        self._updater.bot.set_webhook("{}/{}".format(self._web_hook_url, self._token))
+                                    url_path=self._token,
+                                    webhook_url="https://{}:{}/{}".format(self._web_hook_url, self._port, self._token),
+                                    cert=os.path.join(sys.path[0], 'certs/server.pem'),
+                                    key=os.path.join(sys.path[0], 'certs/server.key'))
 
     def call(self):
 
