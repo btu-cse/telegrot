@@ -102,7 +102,7 @@ class ReplicaTelegramBot(TelegramBot):
             str(ReplicaTelegramBot.new_question_message())), reply_markup=ReplicaTelegramBot.new_question_keyboard())
 
     def web_command(self, update, context):
-        update.message.reply_text("Bölüm Web sayfamıza http://bilgisayar.btu.edu.tr adresinden erişebilirsiniz. {}".format(
+        update.message.reply_text("Bölüm Web sayfamıza https://mdbf.btu.edu.tr/bilgisayar adresinden erişebilirsiniz. {}".format(
             str(ReplicaTelegramBot.new_question_message())), reply_markup=ReplicaTelegramBot.new_question_keyboard())
 
     def add_command(self, update, context):

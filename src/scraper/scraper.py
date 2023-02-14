@@ -4,7 +4,7 @@ from src.common.logger import Logger
  
 
 class Scraper:
-    site_url: str = 'http://bilgisayar.btu.edu.tr/index.php'
+    site_url: str = "https://mdbf.btu.edu.tr/bilgisayar"
 
     # gets announcement id: developed for getting last announcement and serializing it
     # if announcement = 0 then gets the last announcement id

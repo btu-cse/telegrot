@@ -1,0 +1,59 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: test 
+        run: ls -al && cd .. && ls -al
+
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private.key
+          sudo chmod 600 ~/.ssh/private.key
+          ssh-keyscan -H ${{secrets.SSH_HOST}} > ~/.ssh/known_hosts
+          echo "Host ${{secrets.SSH_HOST}}
+            User ${{secrets.SSH_USER}}
+            IdentityFile ~/.ssh/private.key" > ~/.ssh/config
+            cat ~/.ssh/config
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+
+
+      - name: Docker setup
+        uses: docker-practice/actions-setup-docker@master
+      
+      - name: Docker test
+        run: |
+            set -x
+            docker version
+            docker run --rm hello-world
+
+      - name: Docker Login
+        run: |
+          echo ${{secrets.DOCKER_SECRET_KEY}} | docker login --username ${{secrets.DOCKER_USER}} --password-stdin
+      
+      - name: Deploy with rsync
+        run: rsync -avz --exclude-from='.rsyncignore' ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/${{ secrets.SSH_HOST }}
