@@ -1,6 +1,6 @@
 requests==2.25.0
 python-telegram-bot==12.8
-beautifulsoup4==4.9.1
+beautifulsoup4==4.11.2
 emoji==0.6.0
 DateTime==4.3
 mysql-connector-python==8.0.22
