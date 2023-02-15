@@ -2,7 +2,7 @@ requests==2.25.0
 python-telegram-bot==12.8
 beautifulsoup4==4.9.1
 emoji==0.6.0
-DateTime==4.3
+DateTime==5.0
 mysql-connector-python==8.0.22
 urllib3==1.26.5
 python-dotenv==0.21.0
