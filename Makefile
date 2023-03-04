@@ -1,5 +1,9 @@
 all: init create_cert 
 
+init: venv 
+
+venv: python -m venv venv
+
 build_and_push: build_image push_image
 
 build_image: 

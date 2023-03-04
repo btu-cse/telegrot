@@ -1,3 +1,4 @@
+from this import d
 import requests
 from bs4 import BeautifulSoup
 from src.common.logger import Logger
@@ -7,75 +8,63 @@ class Scraper:
     site_url: str = "https://mdbf.btu.edu.tr/tr/bilgisayar/duyuru/birim/193"
 
     @staticmethod
-    def get_announcement_id(announcement: int) -> str:
-        try:
-            page = requests.get(Scraper.site_url)
-            soup = BeautifulSoup(page.content, 'html.parser')
-            ann_list= soup.find_all('div',class_ = "ann-list")[0].find_all('ul')[0]
-            anns = ann_list.find_all('li')
+    def __get_content_from_url(url: str) -> str:
+        return requests.get(url).content
 
-            
-            i=0
-            for val in anns:
-                if i==announcement:
+    @staticmethod
+    def get_announcement_id(announcement: int) -> int:
+        try:
+            content = Scraper.__get_content_from_url(Scraper.site_url)
+            soup = BeautifulSoup(content, 'html.parser')
+            announcement_list = soup.find_all(
+                'div', class_="ann-list")[0].find_all('ul')[0]
+            announcements = announcement_list.find_all('li')
+
+            i = 0
+            for val in announcements:
+                if i == announcement:
                     return val.find_all('a')[0].get('href').split('/')[7]
-                i+=1
-                
+                i += 1
 
         except Exception as e:
             Logger.error("there is an error while getting announcement id from website, Announcement number: {0} \n".format(
                 announcement), e)
 
-        return ""
-    
+        return -1
+
     @staticmethod
-    def get_last_announcement_id() -> str:
+    def get_last_announcement_id() -> int:
         return Scraper.get_announcement_id(0)
-    
+
     # gets last announcement's content: developed for sent the last announcement as a content
     @staticmethod
-    def get_announcement_content_by_id(announcement: str) -> str:
+    def get_announcement_content_by_id(announcement: int) -> str:
         try:
-            
+            content = Scraper.__get_content_from_url(Scraper.site_url)
+            soup = BeautifulSoup(content, 'html.parser')
+            announcement_list = soup.find_all(
+                'div', class_="ann-list")[0].find_all('ul')[0]
+            announcements = announcement_list.find_all('li')
 
-            page = requests.get(Scraper.site_url)
-            soup = BeautifulSoup(page.content, 'html.parser')
-            ann_list= soup.find_all('div',class_ = "ann-list")[0].find_all('ul')[0]
-            anns = ann_list.find_all('li')
-        
-            ann=""
-        
-        
-            for val in anns:
+            announcement_url = ""
+
+            for val in announcements:
                 if announcement in val.find_all('a')[0].get('href').split('/')[7]:
-                    ann_id=val.find_all('a')[0].get('href')
-            
-        
-            ann_page=requests.get(ann_id, verify=False)
-            soup = BeautifulSoup(ann_page.content, 'html.parser')
-            ann_text= soup.find_all('div',class_ = "page-about")[0].get_text()
-            ann_text += '\nİncelemek için: ' + str(ann_id) + '?'
-                        
-            return ann_text
+                    announcement_url = val.find_all('a')[0].get('href')
+
+            if announcement_url == "":
+                raise Exception(
+                    "there is no announcement suc this: {0}".format(announcement_url))
+
+            announcement_page = requests.get(announcement_url, verify=False)
+            soup = BeautifulSoup(announcement_page.content, 'html.parser')
+            announcement_text = soup.find_all('div', class_="page-about")[0].get_text()
+            announcement_text += '\nİncelemek için: ' + str(announcement_url) + '?'
+
+            return announcement_text
 
         except Exception as e:
             Logger.error("there is an error while getting announcement's content from website, Announcement number: {0}".format(
-             announcement), e)
+                announcement), e)
 
-            return ""
-
-
-                
-            
-
-                
-            
-            
-            
-            
-            
-
-
-            
-            
-
+        return ""
