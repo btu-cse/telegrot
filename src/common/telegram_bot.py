@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import Callable
 
@@ -88,7 +89,7 @@ class TelegramBot:
             try:
                 command(update, context)
             except Exception as e:
-                Logger.error("there is an unexpected error on '{}'".format(command.__name__), e)
+                Logger.error("there is an unexpected error on '{}' %s".format(command.__name__), e)
                 update.message.reply_text(
                     "Bilinmeyen bir hata oluştu, bu komut şu an kullanılamıyor.")
 

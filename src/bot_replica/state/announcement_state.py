@@ -3,10 +3,10 @@ from typing import List
 from src.bot_replica.entity.announcement import Announcement
 from src.common.logger import Logger
 from src.scraper.scraper import Scraper
- 
+
 
 class AnnouncementState:
-    __last_announcement: Announcement = Announcement(announcement=-1)
+    __last_announcement = Announcement(announcement=-1)
 
     def __init__(self) -> None:
         self.migrate()
@@ -20,11 +20,12 @@ class AnnouncementState:
         if not self.__set_announcement_to_db(announcement):
             return False
 
-        Logger.info("new announcement set before => {}, after = {}".format(self.__last_announcement, announcement))
+        Logger.info("new announcement set before => {}, after = {}".format(
+            self.__last_announcement, announcement))
         self.__last_announcement = announcement
         return True
 
-    def get_last_announcement(self) -> Announcement:
+    def get_last_announcement(self):
         return self.__last_announcement
 
     def get_last_announcement_as_id(self):
@@ -32,11 +33,7 @@ class AnnouncementState:
 
     def migrate_last_announcement(self):
         try:
-            row = (Announcement
-                   .select()
-                   .order_by(Announcement.id.desc())
-                   .limit(1)
-                   )
+            row = Announcement.select().order_by(Announcement.id.desc()).limit(1)
 
             if len(row) == 0:
                 last_announcement = Scraper.get_last_announcement_id()
@@ -53,34 +50,27 @@ class AnnouncementState:
 
         except Exception as e:
             Logger.error(
-                "there is an issue with the DB while migrating announcement state", e)
+                "there is an issue with the DB while migrating announcement state %s", e)
 
-    def __set_announcement_to_db(self, last_announcement: Announcement) -> bool:
+    def __set_announcement_to_db(self, last_announcement):
         try:
-            count = (Announcement
-                     .select()
-                     .count()
-                     )
+            count = Announcement.select().count()
+
             if count == 0:
-                _ = (Announcement
-                      .create(announcement=last_announcement.announcement)
-                      )
+                Announcement.create(
+                    announcement=last_announcement.announcement)
+
             else:
-                _ = (Announcement
-                        .update(announcement=last_announcement.announcement)
-                        .order_by(Announcement.id.desc())
-                        .limit(1)
-                        .execute()
-                        )
+                Announcement.update(announcement=last_announcement.announcement).order_by(
+                    Announcement.id.desc()).limit(1).execute()
 
         except Exception as e:
             Logger.error(
-                "there is an issue with the DB while setting new announcement", e)
+                "there is an issue with the DB while setting new announcement %s", e)
             return False
 
         return True
 
-    # lib
     def migrate(self):
         try:
 
@@ -88,4 +78,4 @@ class AnnouncementState:
 
         except Exception as e:
             Logger.error(
-                "there is an issue with the DB while migrating states", e)
+                "there is an issue with the DB while migrating states %s", e)

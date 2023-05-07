@@ -1,4 +1,3 @@
-from this import d
 import requests
 from bs4 import BeautifulSoup
 from src.common.logger import Logger
@@ -27,7 +26,7 @@ class Scraper:
                 i += 1
 
         except Exception as e:
-            Logger.error("there is an error while getting announcement id from website, Announcement number: {0} \n".format(
+            Logger.error("there is an error while getting announcement id from website, Announcement number: {} %s\n".format(
                 announcement), e)
 
         return -1
@@ -64,7 +63,7 @@ class Scraper:
             return announcement_text
 
         except Exception as e:
-            Logger.error("there is an error while getting announcement's content from website, Announcement number: {0}".format(
+            Logger.error("there is an error while getting announcement's content from website, Announcement number: {} %s".format(
                 announcement), e)
 
         return ""

@@ -10,6 +10,8 @@ from src.bot_replica.state.state import ReplicaState
 from src.common import constants
 from src.bot_replica.entity.chat import Chat
 from src.bot_replica.entity.admin import Admin
+from src.common.utils.migrator import migrator
+from src.common.db import DB
 
 from telegram.ext import CommandHandler, CallbackQueryHandler, CallbackContext
 
@@ -27,6 +29,8 @@ class ReplicaTelegramBot(TelegramBot):
         )
 
         self.__control_key = control_key
+        migrator(DB().get_default_db())
+
         Logger.init("replica_bot")
         self.__replica_state = ReplicaState()
         self.run()
@@ -80,7 +84,7 @@ class ReplicaTelegramBot(TelegramBot):
         except Exception as e:
             print(e)
             Logger.error(
-                "there is an error while sending announcements to the chats", e)
+                "there is an error while sending announcements to the chats %s", e)
 
     def help_command(self, update, context):
         """Send a message when the command /help is issued."""
@@ -127,7 +131,7 @@ class ReplicaTelegramBot(TelegramBot):
                         "Komut çalıştırılırken bilinmeyen bir hata oluştu.")
 
             except Exception as e:
-                Logger.error("there is an error while adding a new group", e)
+                Logger.error("there is an error while adding a new group %s", e)
                 update.message.reply_text(
                     "Komut çalıştırma başarısız oldu.")
 
@@ -158,7 +162,7 @@ class ReplicaTelegramBot(TelegramBot):
                     "Bu sohbet zaten listede değil.")
 
             except Exception as e:
-                Logger.error("there is an error while removing a chat. chat => {}, user => {}".format(update.message.chat,
+                Logger.error("there is an error while removing a chat. chat => {}, user => {} %s".format(update.message.chat,
                                                                                                       update.message.from_user), e)
                 update.message.reply_text(
                     "Komut çalıştırma başarısız oldu.")

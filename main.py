@@ -2,20 +2,9 @@ import os
 import urllib3
 
 from src.common.logger import Logger
-from src.common.db import DB
 from src.bot_replica.replica_class import ReplicaTelegramBot
-from src.common.utils.migrator import migrator
 from src.common.utils.env_loader import load_env
 from src.common import constants
-
-print("Initializing...")
-
-# if there are warnings in HTTP request, this clears that warnings
-urllib3.disable_warnings()
-
-load_env()
-
-migrator(DB().get_default_db())
 
 
 def main():
@@ -37,6 +26,13 @@ def main():
     else:
         Logger.fatal("{} bot type is not supported".format(bot_type))
 
+def init():
+    # if there are warnings in HTTP request, this clears that warnings
+    urllib3.disable_warnings()
+
+    load_env()
+
 
 if __name__ == "__main__":
+    init()
     main()

@@ -3,7 +3,9 @@ from src.bot_replica.entity.announcement import Announcement
 from src.bot_replica.entity.chat import Chat
 
 from src.common.logger import Logger
- 
+import traceback
+
+
 def migrator(db):
     try:
         with db:
@@ -13,4 +15,5 @@ def migrator(db):
                 Chat
             ])
     except Exception as e:
-        Logger.error("there is an error with migrations", e)
+        traceback.print_exc()
+        Logger.error("there is an error with migrations %s", e)
